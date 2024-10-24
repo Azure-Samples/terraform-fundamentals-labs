@@ -1,4 +1,4 @@
-# Terraform on Azure Fundamentals Labs
+# Introduction
 
 This is a set of labs that introduce Terraform on Azure. The labs are designed to be completed in order, with each one building on the previous one.
 
@@ -9,7 +9,7 @@ The labs can be completed independently or as part of a Microsoft workshop. Plea
 
 ## Lab 1: Core Terraform Workflow
 
-* [Day 1 Operations](1_core_workflow/day1_operation.md)
+* [Day 1 Operations](01-core-workflow/01-day-1-operation.md)
 * [Day 2 Operations](1_core_workflow/day2_operation.md)
 * [Day N Operations](1_core_workflow/dayn_operation.md)
 

@@ -1,4 +1,8 @@
-#### Understand the terraform core workflow. (write, plan, apply)
+# Understand the terraform core workflow. (write, plan, apply) - Day 1 Operations
+
+[Back to Index](../README.md)
+
+This lab will cover the very basic terraform workflow for the inital creation of resources in Azure.
 
 ## Terraform Core Workflow
 
@@ -6,7 +10,7 @@
 * Plan
 * Apply
 
-#### Setup
+## Setup
 
 > Make sure you are in the correct folder
 

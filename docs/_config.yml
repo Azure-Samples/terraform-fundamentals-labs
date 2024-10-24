@@ -3,10 +3,5 @@ plugins:
 - jekyll-remote-theme
 title: Terraform on Azure Fundamentals Labs
 description: |
-  A set of labs to introduce Terraform on Azure<br/><br/>
-
-  The labs can be completed independently or as part of a Microsoft workshop. Please contact your Microsoft representative for more information on the full training course.<br/><br/>
-
-  - Course Type: CIP<br/>
-  - Course Title: Introduction to Infrastructure as Code using Terraform
+  A set of labs to introduce Terraform on Azure
 show_downloads: true
