@@ -1,3 +1,9 @@
 theme: jekyll-theme-minimal
 title: Terraform on Azure Fundamentals
-description: A set of labs to introduce Terraform on Azure
+description: |
+  A set of labs to introduce Terraform on Azure
+
+  The labs can be completed independently or as part of a Microsoft workshop. Please contact your Microsoft representative for more information on the full training course.
+
+  * Course Type: CIP
+  * Course Title: Introduction to Infrastructure as Code using Terraform
