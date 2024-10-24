@@ -1,7 +1,7 @@
 theme: jekyll-theme-minimal
-title: Terraform on Azure Fundamentals
+title: Terraform on Azure Fundamentals Labs
 description: |
-  A set of labs to introduce Terraform on Azure
+  A set of labs to introduce Terraform on Azure<br/>
 
   The labs can be completed independently or as part of a Microsoft workshop. Please contact your Microsoft representative for more information on the full training course.
 
