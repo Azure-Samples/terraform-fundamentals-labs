@@ -7,9 +7,18 @@ codeBlocks.forEach(function (codeBlock) {
   copyButton.ariaLabel = 'Copy code to clipboard';
   copyButton.innerText = 'Copy';
 
+  var parentClasses = codeBlock.parentElement.parentElement.classList;
+  var language = "";
+  for(var className in parentClasses) {
+    if(className.startsWith('language-')) {
+      language = className.replace('language-', '');
+      break;
+    }
+  }
+
   var codeType = document.createElement('span');
   codeType.className = 'code-type';
-  codeType.innerText = codeBlock.querySelector('code').attributes['data-lang'].value;
+  codeType.innerText = language;
 
   var codeDiv = document.createElement('div');
   codeDiv.className = 'code-div';
