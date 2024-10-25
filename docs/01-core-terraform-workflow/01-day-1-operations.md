@@ -21,6 +21,9 @@ Make sure you are in the correct folder:
 
 {% highlight powershell linenos %}
 cd ~/terraform-labs
+ls
+ls
+Get-ChildItem
 {% endhighlight %}
 
 {% highlight bash linenos %}
