@@ -55,21 +55,21 @@ table.rouge-table td.code {
   padding: 0 !important;
 }
 
-figure.highlight > pre > div.code-div {
+pre.highlight > div.code-div {
   display: flex;
   justify-content: space-between;
 }
 
-figure.highlight > pre > div.code-div > button {
+pre.highlight > div.code-div > button {
   opacity: 0;
 }
 
-figure.highlight > pre:hover > div.code-div > button {
+pre.highlight:hover > div.code-div > button {
   opacity: 1;
 }
 
-figure.highlight > pre > div.code-div > button:active,
-figure.highlight > pre > div.code-div > button:focus {
+pre.highlight > div.code-div > button:active,
+pre.highlight  > div.code-div > button:focus {
   opacity: 1;
 }
 
