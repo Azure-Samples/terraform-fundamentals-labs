@@ -137,6 +137,29 @@ To exit the console at any time and go back to cloud shell's terminal, just type
     cidrsubnet("172.16.0.0/16", 8, 0)
     ```
 
+### 2. Use the console to see Terraform settings
+
+1. Update `main.tf` include this locals block:
+
+    ```hcl
+    locals {
+      terraform_version = terraform.version
+      terraform_workspace = terraform.workspace
+    }
+    ```
+
+1. Exit the console with <key>ctrl+c</key> and then run `terraform console` again.
+
+1. Now you can access the values of the locals block:
+
+    ```powershell
+    local.subnets
+    ```
+
+    ```bash
+    local.subnets
+    ```
+
 For a full list of built-in functions, see below and try out the ones that you find interesting.
 
 * <https://developer.hashicorp.com/terraform/language/functions>
