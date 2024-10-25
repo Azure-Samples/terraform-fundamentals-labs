@@ -7,7 +7,7 @@ codeBlocks.forEach(function (codeBlock) {
   copyButton.ariaLabel = 'Copy code to clipboard';
   copyButton.innerText = 'Copy';
 
-  codeBlock.append(copyButton);
+  codeBlock.prepend(copyButton);
 
   copyButton.addEventListener('click', function () {
     var code = codeBlock.querySelector('table.rouge-table td.code pre').innerText.trim();
