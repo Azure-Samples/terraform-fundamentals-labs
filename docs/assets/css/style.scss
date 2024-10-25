@@ -48,15 +48,15 @@ table.rouge-table td.code {
   padding: 0 !important;
 }
 
-figure.highlight pre > button {
+figure.highlight > pre > button {
   opacity: 0;
 }
 
-figure.highlight pre:hover > button {
+figure.highlight > pre:hover > button {
   opacity: 1;
 }
 
-figure.highlight pre pre > button:active,
-figure.highlight pre pre > button:focus {
+figure.highlight > pre > button:active,
+figure.highlight > pre > button:focus {
   opacity: 1;
 }
