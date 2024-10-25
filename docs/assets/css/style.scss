@@ -57,6 +57,10 @@ table.rouge-table td.rouge-code {
   padding: 0 !important;
 }
 
+table.rouge-table td.rouge-gutter {
+  padding-right: 5px !important;
+}
+
 pre.highlight > div.code-div {
   display: flex;
   justify-content: space-between;
