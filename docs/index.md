@@ -27,32 +27,32 @@ Head over to the [Setup](setup.md) page to get started and then come back here.
 
 ### Lab 2: Terraform Configuration
 
-* [Locals](2_tf_config/1_locals.md)
-* [Variables](2_tf_config/2_variables.md)
-* [Outputs](2_tf_config/3_outputs.md)
+* [Locals](02-terraform-configuration/01_locals.md)
+* [Variables](02-terraform-configuration/02_variables.md)
+* [Outputs](02-terraform-configuration/03_outputs.md)
 
 ### Lab 3: Expressions and Functions
 
-* [Expressions](3_expressions_and_functions/1_expressions.md)
-* [Functions](3_expressions_and_functions/2_functions.md)
+* [Expressions](03-expressions-and-functions/01_expressions.md)
+* [Functions](03-expressions-and-functions/02_functions.md)
 
 ### Lab 4: Data Sources and Imports
 
-* [Import Resources](4_data_sources_and_imports/1_import_resources.md)
+* [Import Resources](04-data-sources-and-refactoring/1-import-resources.md)
 
 ### Lab 5: Dependencies
 
-* [Dependencies](5_dependencies/1_dependencies.md)
+* [Dependencies](05-dependencies/01-dependencies.md)
 
 ### Lab 6: Modules
 
-* [Modules](6_modules/1_module.md)
+* [Modules](06-modules/01-modules.md)
 
 ### Lab 7: Remote State
 
-* [Remote State](7_remote_state/1_remote_state.md)
+* [Remote State](07-remote-state/01-remote-state.md)
 
 ### Lab 8: Continuous Delivery
 
-* [Option 1: GitHub](9_continuous_delivery/1_github.md)
-* [Option 2: Azure DevOps](9_continuous_delivery/2_azure_devops.md)
+* [Option 1: GitHub](09-continuous_delivery/01-github.md)
+* [Option 2: Azure DevOps](09-continuous_delivery/02-azure-devops.md)

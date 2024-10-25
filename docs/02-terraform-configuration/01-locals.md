@@ -1,19 +1,28 @@
+---
+layout: page
+title: Terraform configuration
+description: Lab 2 - Part 1 - Locals
+---
+
+## Lab description
+
+In this lab we learn about `locals` in terraform.
+
 ## Locals
 
-#### Setup
+### Setup
 
-> Make sure you are in the correct folder
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
+```
 
 ```bash
-# if you are using azure shell
-
-cd ~/clouddrive/tfw/contoso
-
-# Ensure the resource groups from previous lab has been destroyed and tf state is clean
-# Below should be empty
-terraform show
+cd ~/terraform-labs
 ```
----
+
+If you were unable to complete the last lab, you can find a copy of the files in the [solutiuons folder](../01-core-terraform-workflow/solutions/03)
 
 ## Refactor main.tf to use locals
 

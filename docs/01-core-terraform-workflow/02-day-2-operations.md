@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Terraform core workflow
-description: Lab 1 - Part 2 - Day 2 Operations - write, init, plan and apply
+description: Lab 1 - Part 2 - Day 2 Operations - write, plan and apply
 ---
 
 ## Lab description
