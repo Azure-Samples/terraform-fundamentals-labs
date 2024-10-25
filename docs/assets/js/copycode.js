@@ -9,11 +9,8 @@ codeBlocks.forEach(function (codeBlock) {
 
   var parentClasses = codeBlock.parentElement.parentElement.classList;
   var language = "";
-  for(var className in parentClasses) {
-    if(className.startsWith('language-')) {
-      language = className.replace('language-', '');
-      break;
-    }
+  if(parentClasses.length == 2) {
+    language = parentClasses[0].replace('language-', '');
   }
 
   var codeType = document.createElement('span');
