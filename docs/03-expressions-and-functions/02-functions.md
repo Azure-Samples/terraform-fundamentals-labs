@@ -148,7 +148,7 @@ To exit the console at any time and go back to cloud shell's terminal, just type
     }
     ```
 
-1. Exit the console with <key>ctrl+c</key> and then run `terraform console` again.
+1. Exit the console with <kbd>ctrl</kbd> + <kbd>C</kbd> and then run `terraform console` again.
 
 1. Now you can access the values of the locals block:
 
