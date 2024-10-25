@@ -132,7 +132,7 @@ If you were unable to complete the last lab, you can find a copy of the files in
         -backend-config="use_azuread_auth=true"
     ```
 
-    ```bach
+    ```bash
     terraform init \
         -backend-config="resource_group_name=<your_resource_group_name>" \
         -backend-config="storage_account_name=<your_storage_account_name>" \
