@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Terraform core workflow
-description: Lab 1, Part 1 - Day 1 Operations - write, init, plan and apply
+description: Lab 1 - Part 1 - Day 1 Operations - write, init, plan and apply
 ---
 
 ## Lab description
@@ -15,7 +15,7 @@ The terraform Core Workflow is:
 * Plan
 * Apply
 
-### Setup
+## Setup
 
 Make sure you are in the correct folder:
 
@@ -27,13 +27,13 @@ cd ~/terraform-labs
 cd ~/terraform-labs
 ```
 
-### Day 1 operation (Create)
+## Day 1 operation (Create)
 
 For the following commands you'll need to be authenticated to Azure and connected to the subscription you want to deploy to.
 
 > HINT: Use `az login` and `az account set --subscription mysubscription`
 
-#### 1. Write
+### 1. Write
 
 1. Create a file called `main.tf` and open in your editor, then paste in the below code.
 
@@ -67,7 +67,7 @@ For the following commands you'll need to be authenticated to Azure and connecte
 
 > HINT: Turn on auto save in VSCode to make your life easier. Go to `File` > `Auto Save` or `ctrl + shift + p` and type `Auto Save` and select `Toggle Auto Save`.
 
-#### 2. Init
+### 2. Init
 
 1. From terminal, (shortcut `ctrl + '` in vs code)
 
@@ -109,7 +109,7 @@ For the following commands you'll need to be authenticated to Azure and connecte
 
     Above should display something like `terraform-provider-azurerm_v4.7.0_x5`.
 
-#### 3. Plan
+### 3. Plan
 
 Starting with AzureRM 4.0, the subscription ID is required. We can either hard code it into our provider block or use the `ARM_SUBSCRIPTION_ID` environment variable. We are going to use the environment variable in this lab.
 
@@ -151,7 +151,7 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-#### 4. Apply
+### 4. Apply
 
 ```powershell
 terraform apply
@@ -174,7 +174,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 > Note that `terraform.tfstate` file has been created locally upon our first apply. State management is a topic on its own and we'll cover it separately.
 
-#### 5. Verify
+### 5. Verify
 
 Verify that the resource has been created, either via `Azure Portal` or using `az cli`.
 
@@ -207,7 +207,7 @@ Besides information about terraform managed resources, `tfstate` will often cont
 
 ---
 
-#### 6. Version control your code
+### 6. Version control your code
 
 1. Add a `.gitignore` file to your folder, copying the content from <https://github.com/github/gitignore/blob/main/Terraform.gitignore>.
 1. Add `main.tf` and `.terraform.hcl.lock` to git
