@@ -19,16 +19,13 @@ The terraform Core Workflow is:
 
 Make sure you are in the correct folder:
 
-{% highlight powershell linenos %}
+```powershell
 cd ~/terraform-labs
-ls
-ls
-Get-ChildItem
-{% endhighlight %}
+```
 
-{% highlight bash linenos %}
+```bash
 cd ~/terraform-labs
-{% endhighlight %}
+```
 
 ### Day 1 operation (Create)
 
