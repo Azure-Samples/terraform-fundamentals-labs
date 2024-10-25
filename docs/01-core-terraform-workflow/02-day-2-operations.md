@@ -23,7 +23,7 @@ The terraform Core Workflow is still:
 
     ```terraform
     tags = {
-      "cost_center" = "contoso research"
+      cost_center = "contoso research"
     }
     ```
 
@@ -35,7 +35,7 @@ The terraform Core Workflow is still:
       location = "UK South"
     
       tags = {
-        "cost_center" = "contoso research"
+        cost_center = "contoso research"
       } 
     }
     ```

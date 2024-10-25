@@ -1,95 +1,142 @@
-#### Understand the terraform core workflow. (write, plan, apply)
+---
+layout: page
+title: Terraform core workflow
+description: Lab 1 - Part 2 - Day 2 Operations - write, init, plan and apply
+---
+
+## Lab description
+
+This lab will cover the very basic terraform workflow for the updating of resources in Azure.
+
+The terraform Core Workflow is still:
+
+* Write
+* Init (not needed this time)
+* Plan
+* Apply (a destroy plan this time)
 
 ## Day n operation (destroy)
 
-**plan**
+### 1. Plan
 
 Run a plan to see what will be destroyed.
 
-```bash
-# make sure you are running this from the contoso folder
-terraform plan -destroy
-
-
+```powershell
+terraform plan -destroy -out contoso.tfplan
 ```
 
-**destroy**
+```bash
+terraform plan -destroy -out contoso.tfplan
+```
+
+Your plan should look something like below:
+
+```text
+azurerm_resource_group.contoso_rg: Refreshing state... [id=/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # azurerm_resource_group.contoso_rg will be destroyed
+  - resource "azurerm_resource_group" "contoso_rg" {
+      - id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg" -> null
+      - location   = "uksouth" -> null
+      - name       = "contoso_rg" -> null
+      - tags       = {
+          - "cost_center" = "contoso research"
+        } -> null
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+
+───────────────────────────────────────────────────────
+
+Saved the plan to: contoso.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "contoso.tfplan"
+```
+
+### 2. Destroy
 
 If the plan looks as expected, go ahead and remove the resource group that we created using `destroy` operation.
 
 `Destroy` depends on your state file to decide what needs to be removed. Unlike apply it cannot be invoked with a `.tfplan` file.
 
-```bash
-terraform destroy
+> Note that a shortcut to performing a destroy plan and apply is `terraform destroy`.
 
-# this is the equivalent of command
-terraform apply -destroy
+```powershell
+terraform apply "contoso.tfplan"
 ```
 
-You should see a terminal output stating what will be destroyed.
+```bash
+terraform apply "contoso.tfplan"
+```
 
-When prompted, type `yes` to approve. This operation may take some time, and terraform will provide status updates every 10 seconds or so.
+You should see a terminal output like this:
 
-_Example Screenshot_:
+```text
+azurerm_resource_group.contoso_rg: Destroying... [id=/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg]
+azurerm_resource_group.contoso_rg: Still destroying... [id=/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg, 10s elapsed]
+azurerm_resource_group.contoso_rg: Destruction complete after 15s
 
-![destroy_example](../assets/destroy_example.png)
+Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
+```
 
-
-**Verify**
+### 3. Verify
 
 Verify that the `contoso_rg` resource group has been deleted from your azure subscription.
 
+```powershell
+az group show --name "contoso_rg"
+```
+
 ```bash
-# You can use the portal or run the below azure cli command
 az group show --name "contoso_rg"
 ```
 
 The state file should now be empty as we have completely cleaned up our terraform managed infrastructure.
 
+```powershell
+terraform show terraform.tfstate
+```
+
 ```bash
 terraform show terraform.tfstate
 ```
 
----
+### 4. Recap
 
-## Recap
-
-#### List of commands covered so far
+Here is a list of commands covered so far:
 
 * init
 * plan
-    * plan -out "planfile"
+  * plan -out "planfile"
 * apply
-    * apply -auto-approve "planfile"
+  * apply "planfile"
 * show
-* destroy 
+* destroy
 
-If you have managed to finish this lab ahead of time, feel free to spend some time around the docs and try out above commands with other options. 
+If you have managed to finish this lab ahead of time, feel free to spend some time around the docs and try out above commands with other options.
 
 Just make sure to clean up the infrastructure prior to next lab.
 
-* https://www.terraform.io/docs/commands/init.html
-* https://www.terraform.io/docs/commands/plan.html
-* https://www.terraform.io/docs/commands/apply.html
-* https://www.terraform.io/docs/commands/show.html
-* https://www.terraform.io/docs/commands/destroy.html
+* <https://developer.hashicorp.com/terraform/cli/commands/init>
+* <https://developer.hashicorp.com/terraform/cli/commands/plan>
+* <https://www.terraform.io/docs/commands/apply.html>
+* <https://developer.hashicorp.com/terraform/cli/commands/show>
+* <https://developer.hashicorp.com/terraform/cli/commands/destroy>
 
----
+### 5. Graph (optional bonus lab)
 
-[**Optional / Bonus task**]
+Take a look at the **`graph`** command. Terraform builds a dependency graph from the Terraform configurations, and walks this graph to generate plans, refresh state, and more
 
-Take a look at **`graph`** command. Terraform builds a dependency graph from the Terraform configurations, and walks this graph to generate plans, refresh state, and more
+See:
 
-See: 
-* https://www.terraform.io/docs/commands/graph.html
-* https://www.terraform.io/docs/internals/graph.html
+* <https://developer.hashicorp.com/terraform/cli/commands/graph>
+* <https://developer.hashicorp.com/terraform/internals/graph>
 
-> Note: To see the graph in svg format, `graphviz` needs to be installed. This will not work in cloud shell as there isn't sudo access, but should work on vs code online. (or local environments)
-
-> http://www.graphviz.org/download/
-
-For this lab, the resource graph would look something like below.
-
-![resource_graph](../assets/graph_example.png)
-
-----
+To see the graph in svg format, `graphviz` needs to be installed. This will not work in cloud shell as there isn't sudo access, but should work on vs code online. (or local environments) <http://www.graphviz.org/download>.

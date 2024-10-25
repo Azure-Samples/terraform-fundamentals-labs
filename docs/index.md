@@ -22,8 +22,8 @@ Head over to the [Setup](setup.md) page to get started and then come back here.
 ### Lab 1: Core Terraform Workflow
 
 * [Day 1 Operations](01-core-terraform-workflow/01-day-1-operations.md)
-* [Day 2 Operations](1_core_workflow/day2_operation.md)
-* [Day N Operations](1_core_workflow/dayn_operation.md)
+* [Day 2 Operations](01-core-terraform-workflow/02-day-2-operations.md)
+* [Day N Operations](01-core-terraform-workflow/03-day-n-operations.md)
 
 ### Lab 2: Terraform Configuration
 
