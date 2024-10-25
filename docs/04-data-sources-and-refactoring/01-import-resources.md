@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Data sources and refactoring
-description: Lab 4 - Part 1 - Import resources
+description: Lab 4 - Part 1 - Import resources and data sources
 ---
 
 ## Lab description
