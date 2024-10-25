@@ -65,7 +65,7 @@ If you were unable to complete the last lab, you can find a copy of the files in
     }
     ```
 
-2. Run a `plan` and `apply` as we've done before. 
+2. Run a `plan` and `apply` as we've done before.
 
   ```powershell
   terraform plan -out "contoso.tfplan"
@@ -95,6 +95,6 @@ If you were unable to complete the last lab, you can find a copy of the files in
 
 * <https://developer.hashicorp.com/terraform/language/values/locals>
 
-----
+---
 
 [Next Lab - Variables](02-variables.md)

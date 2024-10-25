@@ -1,20 +1,37 @@
-## Get to know a handful of built-in functions in Terraform
+---
+layout: page
+title: Terraform expressions and functions
+description: Lab 3 - Part 1 - Expressions
+---
 
-#### Setup
+## Lab description
 
-> Make sure you are in the correct folder
+In this lab we learn about `expressions` in Terraform.
 
-```bash
-cd ~/clouddrive/tfw/contoso
+## Expressions
+
+### Setup
+
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
 ```
 
-#### Launch Interactive Console
+```bash
+cd ~/terraform-labs
+```
+
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/02-terraform-configuration/solutions/03)
+
+### Launch Interactive Console
 
 Terraform comes with an interactive console that is very handy to evaluate expresssions and exploring functions 
 
 ```bash
 terraform console
 ```
+
 You should see your prompt now appearing as below. 
 
 ```bash
