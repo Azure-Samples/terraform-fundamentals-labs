@@ -1,4 +1,4 @@
-var codeBlocks = document.querySelectorAll('table.rouge-table td.code pre');
+var codeBlocks = document.querySelectorAll('figure.highlight pre');
 
 codeBlocks.forEach(function (codeBlock) {
   var copyButton = document.createElement('button');
@@ -10,7 +10,7 @@ codeBlocks.forEach(function (codeBlock) {
   codeBlock.append(copyButton);
 
   copyButton.addEventListener('click', function () {
-    var code = codeBlock.querySelector('code').innerText.trim();
+    var code = codeBlock.querySelector('table.rouge-table td.code pre').innerText.trim();
     window.navigator.clipboard.writeText(code);
 
     copyButton.innerText = 'Copied';
