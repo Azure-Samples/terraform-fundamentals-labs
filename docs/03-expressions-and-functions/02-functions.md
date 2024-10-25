@@ -40,6 +40,8 @@ You should see your prompt `>` appear.
 
 To exit the console at any time and go back to cloud shell's terminal, just type `exit` or press `ctrl + c`. To clear the screen, press `ctrl + l`
 
+> NOTE: The Terraform console can be tricky to paste into. Right-click your mouse after copying an individual command to get it to work.
+
 ### 1. Explore and practice a handful of built-in functions using the console
 
 > Built-in functions greatly help with writing cleaner code. We will use some of the functions in our config later as well.
