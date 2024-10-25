@@ -38,7 +38,7 @@ terraform console
 
 You should see your prompt `>` appear.
 
-To exit the console at any time and go back to cloud shell's terminal, just type `exit` or press `ctrl + c`. To clear the screen, press `ctrl + l`
+To exit the console at any time and go back to cloud shell's terminal, just type `exit` or press <kbd>ctrl</kbd> + <kbd>c</kbd>. To clear the screen, press <kbd>ctrl</kbd> + <kbd>l</kbd>
 
 > NOTE: The Terraform console can be tricky to paste into. Right-click your mouse after copying an individual command to get it to work.
 
@@ -148,7 +148,7 @@ To exit the console at any time and go back to cloud shell's terminal, just type
     }
     ```
 
-1. Exit the console with <kbd>ctrl</kbd> + <kbd>C</kbd> and then run `terraform console` again.
+1. Exit the console with <kbd>ctrl</kbd> + <kbd>c</kbd> and then run `terraform console` again.
 
 1. Now you can access the values of the locals block:
 
