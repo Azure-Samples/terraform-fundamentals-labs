@@ -42,7 +42,7 @@ For the following commands you'll need to be authenticated to Azure and connecte
 
     > HINT: If you are using VSCode, you can type **`code .`** and select `main.tf` or simply **`code main.tf`** in terminal to bring up the editor.
   
-    ```terraform
+    {% highlight terraform linenos %}
     # Specifiy the provider and version
     terraform {
       required_providers {
@@ -63,7 +63,7 @@ For the following commands you'll need to be authenticated to Azure and connecte
       name     = "contoso_rg"
       location = "UK South"
     }
-    ```
+    {% endhighlight %}
 
 1. Take a quick look at above code and understand what it does.
 1. Save `main.tf` (`ctrl + s`)
