@@ -131,7 +131,7 @@ azurerm_resource_group.contoso_rg: Modifications complete after 1s [id=/subscrip
 Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
 ```
 
-### 4.Verify
+### 4. Verify
 
 Verify that `cost_center` tag has been created on our resource group.
 
@@ -171,4 +171,4 @@ terraform show terraform.tfstate
 
 ---
 
-[Next Lab - Day n Operations](02-day-n-operations.md)
+[Next Lab - Day n Operations](03-day-n-operations.md)
