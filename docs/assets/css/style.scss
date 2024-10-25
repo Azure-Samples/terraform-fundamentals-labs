@@ -27,3 +27,9 @@
   display: flex;
   padding-top: 1rem;
 }
+
+[data-lang]::before {
+  content: attr(data-lang);
+  display: block;
+  text-align: right;
+}

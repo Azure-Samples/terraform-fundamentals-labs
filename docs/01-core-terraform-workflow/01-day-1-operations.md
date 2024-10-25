@@ -8,66 +8,68 @@ description: Lab 1, Part 1 - Day 1 Operations - write, init, plan and apply
 
 This lab will cover the very basic terraform workflow for the inital creation of resources in Azure.
 
-## Terraform Core Workflow
+The terraform Core Workflow is:
 
 * Write
+* Init
 * Plan
 * Apply
 
 ### Setup
 
-> Make sure you are in the correct folder
+Make sure you are in the correct folder:
 
 ```powershell
-
+cd ~/terraform-labs
 ```
 
 ```bash
-# if you are using azure shell
-cd ~/clouddrive/tfw/contoso
-
-# Navigate accordingly if you are using your own dev environment
+cd ~/terraform-labs
 ```
 
 ### Day 1 operation (Create)
 
-> NOTE: For the following commands you'll need to be authenticated to Azure and connected to the subscription you want to deploy to. HINT: Use `az login` and `az account set --subscription mysubscription`
+For the following commands you'll need to be authenticated to Azure and connected to the subscription you want to deploy to.
+
+> HINT: Use `az login` and `az account set --subscription mysubscription`
 
 #### 1. Write
 
-1. Open `main.tf` on the editor and paste in the below code.
+1. Create a file called `main.tf` and open in your editor, then paste in the below code.
 
-    > If you are in `cloud shell`, you can type **`code .`** and select `main.tf` or simply **`code main.tf`** in terminal to bring up the editor.
+    > HINT: If you are using VSCode, you can type **`code .`** and select `main.tf` or simply **`code main.tf`** in terminal to bring up the editor.
   
     ```terraform
     # Specifiy the provider and version
     terraform {
-        required_providers {
-            azurerm = {
-                source  = "hashicorp/azurerm"
-                version = "~>3.34.0"
-            }
+      required_providers {
+        azurerm = {
+          source  = "hashicorp/azurerm"
+          version = "~> 4.0"
         }
+      }
     }
     
     # Configure the Microsoft Azure Provider
     provider "azurerm" {
-        features {}
+      features {}
     }
     
     # Create the very first resource
     resource "azurerm_resource_group" "contoso_rg" {
-        name = "contoso_rg"
-        location = "UK South"
+      name     = "contoso_rg"
+      location = "UK South"
     }
     ```
 
 1. Take a quick look at above code and understand what it does.
-1. Save `main.tf` (`ctrl + s` should work on cloud shell)
+1. Save `main.tf` (`ctrl + s`)
+
+> HINT: Turn on auto save in VSCode to make your life easier. Go to `File` > `Auto Save` or `ctrl + shift + p` and type `Auto Save` and select `Toggle Auto Save`.
 
 #### 2. Init
 
-1. From terminal, (shortcut `ctrl + '` on cloud shell or vs code)
+1. From terminal, (shortcut `ctrl + '` in vs code)
 
     ```powershell
     terraform init
@@ -91,36 +93,50 @@ cd ~/clouddrive/tfw/contoso
 
     To upgrade to newer version of the provider in the future, will require a **`terraform init --upgrade`**, which will then also update the lock file. This prevents accidental version bump following a change to `main.tf`.
 
-    Ensure `.terraform.lock.hcl` is version controlled.
+    You can version control `.terraform.lock.hcl` to ensure everyone gets the same versions moving forward.
 
 1. `.terraform` directory - Contains provider itself that got installed based on the version specified in `main.tf`.
 
     ```powershell
-    
+    ls -R ./.terraform/providers/*/
     ```
+
+    Above should display something like `terraform-provider-azurerm_v4.7.0_x5.exe`.
 
     ```bash
     ls -R ./.terraform/providers/*/   
-
-    # Above should display something like "terraform-provider-azurerm_v2.x.0_x5"
     ```
+
+    Above should display something like `terraform-provider-azurerm_v4.7.0_x5`.
 
 #### 3. Plan
 
-```bash
-# plan. Below command will generate an execution plan.
-# Take a few minutes to go through the terminal output and see what changes will be applied
+Starting with AzureRM 4.0, the subscription ID is required. We can either hard code it into our provider block or use the `ARM_SUBSCRIPTION_ID` environment variable. We are going to use the environment variable in this lab.
 
+> HINT: Can't remember your subscription id? Run `az account show --query id -o tsv` in your terminal.
+
+```powershell
+$env:ARM_SUBSCRIPTION_ID = "your_subscription_id"
+```
+
+```bash
+export ARM_SUBSCRIPTION_ID="your_subscription_id"
+```
+
+We can now run the plan:
+
+```powershell
+terraform plan
+```
+
+```bash
 terraform plan
 ```  
 
-You should see something like below
+You should see something like below:
 
-```bash
-▶ terraform plan           
-
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
+```text
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
 
 Terraform will perform the following actions:
