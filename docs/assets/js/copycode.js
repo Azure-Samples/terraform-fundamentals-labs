@@ -25,7 +25,7 @@ codeBlocks.forEach(function (codeBlock) {
   codeBlock.prepend(codeDiv);
 
   copyButton.addEventListener('click', function () {
-    var code = codeBlock.querySelector('table.rouge-table td.code pre').innerText.trim();
+    var code = codeBlock.querySelector('table.rouge-table td.rouge-code pre').innerText.trim();
     window.navigator.clipboard.writeText(code);
 
     copyButton.innerText = 'Copied';
