@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Terraform on Azure Fundamentals Labs
-description: A set of labs to introduce Terraform on Azure
+title: Terraform core workflow.
+description: Day 1 Operations - write, init, plan and apply
 ---
 
 ## Lab description
