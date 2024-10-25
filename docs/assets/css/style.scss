@@ -29,7 +29,7 @@
 }
 
 [data-lang]::before {
-  content: attr(data-lang);
+  content: attr(data-lang) !important;
   display: block;
   text-align: right;
 }
@@ -42,4 +42,8 @@ table.rouge-table td pre {
 
 table.rouge-table td {
   border: none !important;
+}
+
+table.rouge-table td.code {
+  padding: 0 !important;
 }
