@@ -257,7 +257,7 @@ If you were unable to complete the last lab, you can find a copy of the files in
 
 1. Have a look at the virtual networks and subnets in the Azure portal.
 
-### 4. Commit your code 
+### 4. Commit your code
 
 Commit your code into git.
 

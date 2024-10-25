@@ -1,361 +1,421 @@
+---
+layout: page
+title: Modules
+description: Lab 6 - Part 1 - Local Modules
+---
+
+## Lab description
+
+In this lab we learn about local Terraform modules and how to create them.
+
 ## Create a local module that encapsulates what we've created so far
 
-#### Setup
+### Setup
 
-> Make sure you are in the correct folder
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
+```
 
 ```bash
-cd ~/clouddrive/tfw/contoso
+cd ~/terraform-labs
 ```
 
-> Ensure that you have cleaned up resources from previous labs using `terraform destroy`. (state file should be empty as well)
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/05-dependencies/solutions/01)
 
----
+### 1. Setup Module structure
 
-#### Setup Module structure
+Here, we will create a simple module called `demo` that will create a resource groups and virtual networks in new subscription.
 
-Here, we will create a simple module called `contoso-az-connectedrg` that will create a resource group for given list of `rg_names` and create a `vnet` for each of them as well.
+1. To get started, create a folder called `modules` and create the required config files as below.
 
-To get started, create a folder called modules and create the required config files as below.
+    ```powershell
+    cd ~/terraform-labs
+    New-Item -Path "./modules/demo" -ItemType Directory
+    
+    cd modules/demo
+    New-Item -Path "./README.md" -ItemType File
+    New-Item -Path "./main.tf" -ItemType File
+    New-Item -Path "./outputs.tf" -ItemType File
+    New-Item -Path "./variables.tf" -ItemType File
+    cd ~/terraform-labs
+    ```
 
-```bash
-# create the folders
-mkdir -m modules/contoso-az-connectedrg
+    ```bash
+    cd ~/terraform-labs
+    mkdir -m modules/demo
+    
+    cd modules/demo
+    touch README.md
+    touch main.tf
+    touch outputs.tf
+    touch variables.tf
+    cd ~/terraform-labs
+    ```
 
-cd modules/contoso-az-connectedrg
-touch README.md
-touch main.tf
-touch outputs.tf
-touch variables.tf
-cd ../../
-# or 
-# cd ~/clouddrive/tfw/contoso
-```
-The file structure from `contoso` should look like below.
+1. Your file structure should now look like this:
 
-```bash
-├── contoso
-│   ├── main.tf
-│   ├── modules
-│   │   └── contoso-az-connectedrg
-│   │       ├── README.md
-│   │       ├── main.tf
-│   │       ├── outputs.tf
-│   │       └── variables.tf
-│   ├── outputs.tf
-│   ├── terraform.tfstate
-│   ├── terraform.tfstate.backup
-│   ├── terraform.tfvars
-│   └── variables.tf
-    |__...plus any other .tfvars...
-```
+    ```text
+    📂terraform-labs
+    ┣ 📂.terraform
+    ┣ 📂modules
+    ┃ ┗ 📂demo
+    ┃   ┣ 📜main.tf
+    ┃   ┣ 📜outputs.tf
+    ┃   ┣ 📜README.md
+    ┃   ┗ 📜variables.tf
+    ┣ 📜.gitignore
+    ┣ 📜.terraform.lock.hcl
+    ┣ 📜contoso.europe.tfvars
+    ┣ 📜contoso.tfplan
+    ┣ 📜contoso.uk.tfvars
+    ┣ 📜main.tf
+    ┣ 📜outputs.tf
+    ┣ 📜terraform.tfstate
+    ┣ 📜terraform.tfstate.backup
+    ┣ 📜terraform.tfvars
+    ┗ 📜variables.tf
+    ```
 
-#### Move the resource blocks into our new module
+### 2. Move the resource blocks into our new module
 
-Move the resource blocks from  main.tf in contoso folder into main.tf in contoso-az-connectedrg
+1. Move the locals and resource blocks from `main.tf` in your root module folder into `main.tf` in `demo` module folder.
 
-They should look like below. (Feel free to paste them over)
+    The `demo` `main.tf` should look like this:
 
-**Main.tf**
-
-```terraform
-# modules/contoso-az-connectedrg/main.tf
-resource "azurerm_resource_group" "rgs" {  
-    count = length(var.rg_names)
-    name = "${var.prefix}_${var.rg_names[count.index]}"
-    location = var.region
-    tags = var.tags
-}
-
-resource "azurerm_virtual_network" "vnets" {
-    count               = length(var.rg_names)
-    name                = lookup(var.vnets[count.index], "name")
-    address_space       = [lookup(var.vnets[count.index], "address")]
-    location            = var.region
-    resource_group_name = azurerm_resource_group.rgs[count.index].name
-}
-```
-
-Now, call the above module from `main.tf` in `contoso` folder using module block.
-
-```terraform
-# contoso/main.tf (calling module)
-
-# main.tf from calling module 
-terraform {
-    required_providers {
-        azurerm = {
-            source  = "hashicorp/azurerm"
-            version = "~>3.34.0"
-        }
+    ```terraform
+    locals {
+      subnets = { for subnet in flatten([
+        for virtual_network_key, virtual_network_value in var.virtual_networks : [
+          for subnet_key, subnet_value in virtual_network_value.subnets : {
+            composite_key        = "${virtual_network_key}-${subnet_key}"
+            name                 = subnet_value.name == null ? "${virtual_network_value.name}-${subnet_key}" : subnet_value.name
+            address_prefix       = subnet_value.address_prefix
+            resource_group_name  = azurerm_resource_group.demo[virtual_network_value.resource_group_key].name
+            virtual_network_name = azurerm_virtual_network.demo[virtual_network_key].name
+          }
+        ]
+      ]) : subnet.composite_key => subnet }
     }
-}
+    
+    resource "azurerm_resource_group" "demo" {
+      for_each = var.resource_groups
+      name     = "${var.prefix}_${each.value}"
+      location = var.region
+      tags     = var.tags
+    }
+    
+    resource "azurerm_virtual_network" "demo" {
+      for_each            = var.virtual_networks
+      name                = each.value.name
+      address_space       = each.value.address_space
+      location            = var.region
+      resource_group_name = azurerm_resource_group.demo[each.value.resource_group_key].name
+    }
+    
+    resource "azurerm_subnet" "demo" {
+      for_each             = local.subnets
+      name                 = each.value.name
+      resource_group_name  = each.value.resource_group_name
+      virtual_network_name = each.value.virtual_network_name
+      address_prefixes     = [each.value.address_prefix]
+    }
+    ```
 
-provider "azurerm" {
-    features {}    
-}
+1. Copy the variables to `variable.tf`
 
-module "connectedrg" {
-    # or remote git repo with ?ref=verion    
-    source = "./modules/contoso-az-connectedrg"       
-     
-    rg_names = var.rg_names
-    vnets = var.vnets
-}
-```
+  The `demo` `variable.tf` should look like this:
 
-**variables.tf**
+  ```terraform
+  variable "resource_groups" {
+    type        = map(string)
+    description = "The resource groups to deploy"
+  }
+  
+  variable "prefix" {
+    type        = string
+    description = "A prefix for all resources"
+    default     = "contoso"
+  }
+  
+  variable "region" {
+    type        = string
+    default     = "North Europe"
+    description = "The Azure region to deploy resources"
+    validation {
+      condition     = contains(["UK South", "UK West", "North Europe", "West Europe", "East US", "West US"], var.region)
+      error_message = "Invalid region"
+    }
+  }
+  
+  variable "tags" {
+    type        = map(any)
+    description = "A map of tags"
+  }
+  
+  variable "virtual_networks" {
+    type = map(object({
+      name               = string
+      resource_group_key = string
+      address_space      = list(string)
+      subnets = map(object({
+        name           = optional(string)
+        address_prefix = string
+      }))
+    }))
+    description = "The virtual networks to deploy"
+  }
+  ```
 
-Move the variables into the module as below.
+1. Copy the outputs to `outputs.tf`
 
-```terraform
-# modules/contoso-az-connectedrg/variables.tf
-variable rg_names {
-    type = list(string)    
-}
+  The `demo` `outputs.tf` should look like this:
 
-variable vnets {
-    type = list(map(string))    
-}
+  ```terraform
+  output "resource_group_ids" {
+    value       = { for key, value in azurerm_resource_group.demo : key => value.id }
+    description = "Resource group ids"
+  }
+  ```
 
-variable prefix {
-    type = string
-    default = "contoso"
-}
+1. Call the module from the root `main.tf`
 
-variable region {           
-    type = string
-    default = "UK South"
-}
+  The `main.tf` in the root module should look like this:
 
-variable tags {
-    type = map       
-    default = {
-        company = "contoso corp"
-    }   
-}
-```
+  ```terraform
+  terraform {
+    required_providers {
+      azurerm = {
+        source  = "hashicorp/azurerm"
+        version = "~> 4.0"
+      }
+    }
+  }
+  
+  provider "azurerm" {
+    features {}
+  }
+  
+  module "demo" {
+    source = "./modules/demo"
+    
+    prefix = var.prefix
+    region = var.region
+    resource_groups = var.resource_groups
+    virtual_networks = var.virtual_networks
+    tags = var.tags
+  }
+  ```
 
-> variables.tf for calling module now only requires `vnets` and `rg_names`
+1. Update `outputs.tf` to reference the module
 
-```terraform
-# contoso/variables.tf
-variable rg_names {
-    type = list(string)    
-}
+    The `outputs.tf` in the root module should look like this:
 
-variable vnets {
-    type = list(map(string))    
-}
-```
+    ```terraform
+    output "resource_group_ids" {
+      value       = module.demo.resource_group_ids
+      description = "Resource group ids"
+    }
+    ```
 
-**outputs.tf**
+### 3. Plan
 
-Here, we return outputs from our new module and forward it to our calling module.
+1. When you're ready, run a plan. Make sure you're in the correct folder.
 
-output files should look as below.
+    ```powershell
+    cd ~/terraform-labs
+    terraform plan
+    ```
 
-```terraform
-# modules/contoso-az-connectedrg/outputs.tf
-output "rg_ids" {    
-    value = azurerm_resource_group.rgs.*.id   
-}
+    ```bash
+    cd ~/terraform-labs
+    terraform plan
+    ```
 
-output "vnet_ids" {    
-    value = azurerm_virtual_network.vnets.*.id   
-}
+1. This will fail as we need to `initialize` our new module
 
-```
-And now we refer to module resource's object
+    ```text
+    │ Error: Module not installed
+    │
+    │   on main.tf line 14:
+    │   14: module "demo" {
+    │
+    │ This module is not yet installed. Run "terraform init" to install all modules required by this configuration.
+    ```
 
-```terraform
-# contoso/outputs.tf
-output "resource_groups" {    
-    value = module.connectedrg.rg_ids
-}
+1. Run an Init
 
-output "vnets" {    
-    value = module.connectedrg.vnet_ids
-}
-```
-
-**terraform.tfvars**
-
-And finally, we now pass in the values for `vnets` and `rg_names` from calling module.
-
-Note that child modules don't require terraform.tfvars as we often pass the value in. There are some defaults in their `variables.tf` however for our convenience.
-
-```terraform
-# contoso/terraform.tfvars
-rg_names = [
-    "research_dev_rg",
-    "research_staging_rg",
-    "research_prod_rg"
-]
-
-vnets = [
-    {
-        name = "dev_vnet"
-        address = "10.0.0.0/16"
-    },
-    {
-        name = "staging_vnet"
-        address = "10.1.0.0/16"
-    },
-    {
-        name = "prod_vnet"
-        address = "10.2.0.0/16"
-    },
-]
-```
----
-
-#### Plan
-
-When you're ready, run a plan. Make sure you're in the correct folder.
-
-```bash
-cd ~/clouddrive/tfw/contoso
-terraform plan
-```
-
-This will fail as we need to **`initialize`** our new module
-```
-Error: Module not installed
-
-  on main.tf line 8:
-   8: module "connectedrg" {
-
-This module is not yet installed. Run "terraform init" to install all modules
-required by this configuration.
-```
-
-> Run an Init
-
-```bash
-# From contoso folder 
+```powershell
 terraform init
 ```
 
-#### Plan
-
-Run a plan. You should see an output similar to below. 
-
-> If you're getting any errors at this stage or unsure, please reach out.
-
 ```bash
-Terraform will perform the following actions:
-
-  # module.connectedrg.azurerm_resource_group.rgs[0] will be created
-  + resource "azurerm_resource_group" "rgs" {
-      + id       = (known after apply)
-      + location = "uksouth"
-      + name     = "contoso_research_dev_rg"
-      + tags     = {
-          + "company" = "contoso corp"
-        }
-    }
-
-  # module.connectedrg.azurerm_resource_group.rgs[1] will be created
-  + resource "azurerm_resource_group" "rgs" {
-      + id       = (known after apply)
-      + location = "uksouth"
-      + name     = "contoso_research_staging_rg"
-      + tags     = {
-          + "company" = "contoso corp"
-        }
-    }
-
-  # module.connectedrg.azurerm_resource_group.rgs[2] will be created
-  + resource "azurerm_resource_group" "rgs" {
-      + id       = (known after apply)
-      + location = "uksouth"
-      + name     = "contoso_research_prod_rg"
-      + tags     = {
-          + "company" = "contoso corp"
-        }
-    }
-
-  # module.connectedrg.azurerm_virtual_network.vnets[0] will be created
-  + resource "azurerm_virtual_network" "vnets" {
-      + address_space       = [
-          + "10.0.0.0/16",
-        ]
-      + guid                = (known after apply)
-      + id                  = (known after apply)
-      + location            = "uksouth"
-      + name                = "dev_vnet"
-      + resource_group_name = "contoso_research_dev_rg"
-      + subnet              = (known after apply)
-    }
-
-  # module.connectedrg.azurerm_virtual_network.vnets[1] will be created
-  + resource "azurerm_virtual_network" "vnets" {
-      + address_space       = [
-          + "10.1.0.0/16",
-        ]
-      + guid                = (known after apply)
-      + id                  = (known after apply)
-      + location            = "uksouth"
-      + name                = "staging_vnet"
-      + resource_group_name = "contoso_research_staging_rg"
-      + subnet              = (known after apply)
-    }
-
-  # module.connectedrg.azurerm_virtual_network.vnets[2] will be created
-  + resource "azurerm_virtual_network" "vnets" {
-      + address_space       = [
-          + "10.2.0.0/16",
-        ]
-      + guid                = (known after apply)
-      + id                  = (known after apply)
-      + location            = "uksouth"
-      + name                = "prod_vnet"
-      + resource_group_name = "contoso_research_prod_rg"
-      + subnet              = (known after apply)
-    }
-
-Plan: 6 to add, 0 to change, 0 to destroy.
+terraform init
 ```
 
-#### Apply
+1. Run a plan. You should see an output similar to below
 
-When ready, perform an apply. You should receive an output such as below.
+    You will see a plan that will destroy and re-create all the resources. This is because we are moving the resources to a module and terraform sees them as new resources.
 
-```
-Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+    > NOTE: We can use the `moved` block to move resources to a module without destroying them.
 
-Outputs:
+1. Add `moved` blocks
 
-resource_groups = [
-  "/subscriptions/.../resourceGroups/contoso_research_dev_rg",
-  "/subscriptions/.../resourceGroups/contoso_research_staging_rg",
-  "/subscriptions/.../resourceGroups/contoso_research_prod_rg",
-]
-vnets = [
-  "/subscriptions/.../resourceGroups/contoso_research_dev_rg/providers/Microsoft.Network/virtualNetworks/dev_vnet",
-  "/subscriptions/.../resourceGroups/contoso_research_staging_rg/providers/Microsoft.Network/virtualNetworks/staging_vnet",
-  "/subscriptions/.../resourceGroups/contoso_research_prod_rg/providers/Microsoft.Network/virtualNetworks/prod_vnet",
-]
-```
+    Add the following blocks to `main.tf` in the root module.
 
-#### Verify
+    ```terraform
+    moved {
+      from = azurerm_resource_group.demo
+      to   = module.demo.azurerm_resource_group.demo
+    }
+    
+    moved {
+      from = azurerm_virtual_network.demo
+      to   = module.demo.azurerm_virtual_network.demo
+    }
+    
+    moved {
+      from = azurerm_subnet.demo
+      to   = module.demo.azurerm_subnet.demo
+    }
+    ```
 
-As done before, verify the changes. 
+1. Run the plan again
 
-#### Commit the changes to git.
+    ```powershell
+    terraform plan
+    ```
 
-----
+    ```bash
+    terraform plan
+    ```
 
-#### [Optional]
+    You should see an output similar to below. This time it will not plan to destroy and re-create the resources.
 
-If you have a remote git repo setup, create a new repo called `tf-modules` or something similar and copy the module to remote. Then you should be able to refer to the remote repo.
+    ```text
+    Terraform will perform the following actions:
 
-Additionally, you can also `tag` a commit and use it for versioning the `module`
+      # azurerm_resource_group.demo["dev"] has moved to module.demo.azurerm_resource_group.demo["dev"]
+        resource "azurerm_resource_group" "demo" {
+            id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_dev_rg"
+            name       = "contoso_research_dev_rg"
+            tags       = {
+                "cost_center" = "contoso research"
+            }
+            # (2 unchanged attributes hidden)
+        }
+    
+      # azurerm_resource_group.demo["prod"] has moved to module.demo.azurerm_resource_group.demo["prod"]
+        resource "azurerm_resource_group" "demo" {
+            id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_prod_rg"
+            name       = "contoso_research_prod_rg"
+            tags       = {
+                "cost_center" = "contoso research"
+            }
+            # (2 unchanged attributes hidden)
+        }
+    
+      # azurerm_resource_group.demo["staging"] has moved to module.demo.azurerm_resource_group.demo["staging"]
+        resource "azurerm_resource_group" "demo" {
+            id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_staging_rg"
+            name       = "contoso_research_staging_rg"
+            tags       = {
+                "cost_center" = "contoso research"
+            }
+            # (2 unchanged attributes hidden)
+        }
+    
+      # azurerm_subnet.demo["dev-subnet1"] has moved to module.demo.azurerm_subnet.demo["dev-subnet1"]
+        resource "azurerm_subnet" "demo" {
+            id                                            = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_dev_rg/providers/Microsoft.Network/virtualNetworks/vnet-dev/subnets/subnet-dev-1"
+            name                                          = "subnet-dev-1"
+            # (8 unchanged attributes hidden)
+        }
+    
+      # azurerm_subnet.demo["prod-subnet1"] has moved to module.demo.azurerm_subnet.demo["prod-subnet1"]
+        resource "azurerm_subnet" "demo" {
+            id                                            = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_prod_rg/providers/Microsoft.Network/virtualNetworks/vnet-prod/subnets/vnet-prod-subnet1"
+            name                                          = "vnet-prod-subnet1"
+            # (8 unchanged attributes hidden)
+        }
+    
+      # azurerm_subnet.demo["prod-subnet2"] has moved to module.demo.azurerm_subnet.demo["prod-subnet2"]
+        resource "azurerm_subnet" "demo" {
+            id                                            = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_prod_rg/providers/Microsoft.Network/virtualNetworks/vnet-prod/subnets/vnet-prod-subnet2"
+            name                                          = "vnet-prod-subnet2"
+            # (8 unchanged attributes hidden)
+        }
+    
+      # azurerm_subnet.demo["staging-subnet1"] has moved to module.demo.azurerm_subnet.demo["staging-subnet1"]
+        resource "azurerm_subnet" "demo" {
+            id                                            = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_staging_rg/providers/Microsoft.Network/virtualNetworks/vnet-staging/subnets/subnet-staging-1"
+            name                                          = "subnet-staging-1"
+            # (8 unchanged attributes hidden)
+        }
+    
+      # azurerm_virtual_network.demo["dev"] has moved to module.demo.azurerm_virtual_network.demo["dev"]
+        resource "azurerm_virtual_network" "demo" {
+            id                      = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_dev_rg/providers/Microsoft.Network/virtualNetworks/vnet-dev"
+            name                    = "vnet-dev"
+            tags                    = {}
+            # (9 unchanged attributes hidden)
+        }
+    
+      # azurerm_virtual_network.demo["prod"] has moved to module.demo.azurerm_virtual_network.demo["prod"]
+        resource "azurerm_virtual_network" "demo" {
+            id                      = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_prod_rg/providers/Microsoft.Network/virtualNetworks/vnet-prod"
+            name                    = "vnet-prod"
+            tags                    = {}
+            # (9 unchanged attributes hidden)
+        }
+    
+      # azurerm_virtual_network.demo["staging"] has moved to module.demo.azurerm_virtual_network.demo["staging"]
+        resource "azurerm_virtual_network" "demo" {
+            id                      = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_staging_rg/providers/Microsoft.Network/virtualNetworks/vnet-staging"
+            name                    = "vnet-staging"
+            tags                    = {}
+            # (9 unchanged attributes hidden)
+        }
+    
+    Plan: 0 to add, 0 to change, 0 to destroy.
+    ```
 
----
+### 4. Apply
 
-#### RECAP
+1. When ready, perform an apply. You should receive an output such as below.
+
+    ```text
+    Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+    
+    Outputs:
+    
+    resource_group_ids = {
+      "dev" = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_dev_rg"
+      "prod" = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_prod_rg"
+      "staging" = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_research_staging_rg"
+    }
+    ```
+
+### 5. Verify
+
+As done before, verify the changes
+
+### 6. Commit the changes to git
+
+1. Add the new files to git.
+
+    ```powershell
+    git add .
+    git commit -m "Added local module"
+    ```
+
+    ```bash
+    git add .
+    git commit -m "Added local module"
+    ```
+
+### 7. Recap
 
 See more: https://www.terraform.io/docs/modules/index.html
 
