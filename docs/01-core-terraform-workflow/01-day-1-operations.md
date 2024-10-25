@@ -1,10 +1,10 @@
 ---
 layout: page
+title: Terraform core workflow.
+description: Day 1 Operations - write, init, plan and apply
 ---
 
-# Understand the terraform core workflow. (write, plan, apply) - Day 1 Operations
-
-[Back to Lab Index](../README.md)
+## Lab description
 
 This lab will cover the very basic terraform workflow for the inital creation of resources in Azure.
 
@@ -14,7 +14,7 @@ This lab will cover the very basic terraform workflow for the inital creation of
 * Plan
 * Apply
 
-## Setup
+### Setup
 
 > Make sure you are in the correct folder
 
@@ -29,11 +29,11 @@ cd ~/clouddrive/tfw/contoso
 # Navigate accordingly if you are using your own dev environment
 ```
 
-## Day 1 operation (Create)
+### Day 1 operation (Create)
 
 > NOTE: For the following commands you'll need to be authenticated to Azure and connected to the subscription you want to deploy to. HINT: Use `az login` and `az account set --subscription mysubscription`
 
-### 1. Write
+#### 1. Write
 
 1. Open `main.tf` on the editor and paste in the below code.
 
@@ -65,7 +65,7 @@ cd ~/clouddrive/tfw/contoso
 1. Take a quick look at above code and understand what it does.
 1. Save `main.tf` (`ctrl + s` should work on cloud shell)
 
-### 2. Init
+#### 2. Init
 
 1. From terminal, (shortcut `ctrl + '` on cloud shell or vs code)
 
@@ -105,7 +105,7 @@ cd ~/clouddrive/tfw/contoso
     # Above should display something like "terraform-provider-azurerm_v2.x.0_x5"
     ```
 
-### 3. Plan
+#### 3. Plan
 
 ```bash
 # plan. Below command will generate an execution plan.
@@ -135,7 +135,7 @@ Terraform will perform the following actions:
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-### 4. Apply
+#### 4. Apply
 
 ```bash
 # apply
@@ -156,7 +156,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 > Note that `terraform.tfstate` file has been created locally upon our first apply. State management is a topic on its own and we'll cover it separately. 
 
-### 5. Verify
+#### 5. Verify
 
 Verify that the resource has been created, either via `Azure Portal` or using `az cli` and `jq` on `cloudshell`
 
@@ -185,7 +185,7 @@ Besides information about terrafform-managed-resources, `tfstate` will often con
 
 ---
 
-### 6. Version control your code
+#### 6. Version control your code
 
 1. Add `main.tf` and `.terraform.hcl.lock` to git
 
@@ -218,5 +218,3 @@ Besides information about terrafform-managed-resources, `tfstate` will often con
 ---
 
 [Next Lab - Day 2 Operations](02-day-2-operations.md)
-
-[Back to Lab Index](../README.md)
