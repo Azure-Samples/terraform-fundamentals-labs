@@ -47,3 +47,16 @@ table.rouge-table td {
 table.rouge-table td.code {
   padding: 0 !important;
 }
+
+table.rouge-table td pre.highlight > button {
+  opacity: 0;
+}
+
+table.rouge-table td pre.highlight:hover > button {
+  opacity: 1;
+}
+
+table.rouge-table td pre.highlight > button:active,
+table.rouge-table td pre.highlight > button:focus {
+  opacity: 1;
+}
