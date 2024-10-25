@@ -42,28 +42,28 @@ For the following commands you'll need to be authenticated to Azure and connecte
 
     > HINT: If you are using VSCode, you can type **`code .`** and select `main.tf` or simply **`code main.tf`** in terminal to bring up the editor.
   
-    {% highlight terraform linenos %}
-    # Specifiy the provider and version
-    terraform {
-      required_providers {
-        azurerm = {
-          source  = "hashicorp/azurerm"
-          version = "~> 4.0"
-        }
-      }
+{% highlight terraform linenos %}
+# Specifiy the provider and version
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
     }
+  }
+}
 
-    # Configure the Microsoft Azure Provider
-    provider "azurerm" {
-      features {}
-    }
-    
-    # Create the very first resource
-    resource "azurerm_resource_group" "contoso_rg" {
-      name     = "contoso_rg"
-      location = "UK South"
-    }
-    {% endhighlight %}
+# Configure the Microsoft Azure Provider
+provider "azurerm" {
+  features {}
+}
+
+# Create the very first resource
+resource "azurerm_resource_group" "contoso_rg" {
+  name     = "contoso_rg"
+  location = "UK South"
+}
+{% endhighlight %}
 
 1. Take a quick look at above code and understand what it does.
 1. Save `main.tf` (`ctrl + s`)
