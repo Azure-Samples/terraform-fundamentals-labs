@@ -1,6 +1,5 @@
 ---
-layout: post
-title: null
+layout: page
 ---
 
 # Understand the terraform core workflow. (write, plan, apply) - Day 1 Operations
