@@ -6,3 +6,4 @@ description: |
   A set of labs to introduce Terraform on Azure
 show_downloads: true
 url: https://azure-samples.github.io/terraform-fundamentals-labs
+markdown: GFM
