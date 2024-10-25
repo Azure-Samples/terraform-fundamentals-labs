@@ -111,9 +111,7 @@ The following commands can be used to get outputs from state and values of sensi
     terraform output -raw contoso_rg_id
     ```
 
-### 5. Commit your code and clean up the infrastructure with `terraform destroy`
-
-### 6. Recap
+### 5. Recap
 
 Topics Covered:
 
