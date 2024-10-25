@@ -1,3 +1,9 @@
+---
+layout: page
+title: Terraform core workflow.
+description: Day 1 Operations - write, init, plan and apply
+---
+
 # Introduction
 
 This is a set of labs that introduce Terraform on Azure. The labs are designed to be completed in order, with each one building on the previous one.
