@@ -1,3 +1,9 @@
+---
+layout: page
+title: Terraform core workflow.
+description: Day 1 Operations - write, init, plan and apply
+---
+
 ## Lab description
 
 This lab will cover the very basic terraform workflow for the inital creation of resources in Azure.
