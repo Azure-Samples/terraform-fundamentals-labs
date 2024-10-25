@@ -1,3 +1,8 @@
+---
+layout: default
+title: null
+---
+
 # Understand the terraform core workflow. (write, plan, apply) - Day 1 Operations
 
 [Back to Lab Index](../README.md)
