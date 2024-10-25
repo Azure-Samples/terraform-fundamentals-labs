@@ -399,7 +399,7 @@ terraform init
 
 ### 5. Verify
 
-As done before, verify the changes
+As done before, verify the changes. Pay close attended to the moved resources in state.
 
 ### 6. Commit the changes to git
 

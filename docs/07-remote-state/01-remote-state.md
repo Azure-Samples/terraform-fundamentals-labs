@@ -1,20 +1,32 @@
-## Know how to secure the state file using `tf-backend`
-
-#### Setup
-
-> Make sure you are in the correct folder
-
-```bash
-cd ~/clouddrive/tfw/contoso
-```
-
-> Ensure that you have cleaned up resources from previous labs using `terraform destroy`. (state file should be empty as well)
-
+---
+layout: page
+title: Remote State
+description: Lab 7 - Part 1 - Remote state
 ---
 
-#### Create a storage account and a blob container to hold the state file
+## Lab description
 
-> Use below script to create a storage account (or see azure docs)
+In this lab we learn about Terraform remote state.
+
+## Know how to secure the state file using `tf-backend`
+
+### Setup
+
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
+```
+
+```bash
+cd ~/terraform-labs
+```
+
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/06-modules/solutions/01)
+
+### 1. Create a storage account and a blob container to hold the state file
+
+
 
 ```bash
 #!/bin/bash
