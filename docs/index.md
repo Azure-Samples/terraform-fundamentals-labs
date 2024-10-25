@@ -27,14 +27,14 @@ Head over to the [Setup](setup.md) page to get started and then come back here.
 
 ### Lab 2: Terraform Configuration
 
-* [Locals](02-terraform-configuration/01_locals.md)
-* [Variables](02-terraform-configuration/02_variables.md)
-* [Outputs](02-terraform-configuration/03_outputs.md)
+* [Locals](02-terraform-configuration/01-locals.md)
+* [Variables](02-terraform-configuration/02-variables.md)
+* [Outputs](02-terraform-configuration/03-outputs.md)
 
 ### Lab 3: Expressions and Functions
 
-* [Expressions](03-expressions-and-functions/01_expressions.md)
-* [Functions](03-expressions-and-functions/02_functions.md)
+* [Expressions](03-expressions-and-functions/01-expressions.md)
+* [Functions](03-expressions-and-functions/02-functions.md)
 
 ### Lab 4: Data Sources and Imports
 
