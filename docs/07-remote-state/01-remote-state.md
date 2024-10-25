@@ -26,153 +26,146 @@ If you were unable to complete the last lab, you can find a copy of the files in
 
 ### 1. Create a storage account and a blob container to hold the state file
 
+1. Use your new found knowledge of Terraform to create a storage account and a blob container to hold the state file by applying this Terraform module:
 
-
-```bash
-#!/bin/bash
-
-RESOURCE_GROUP_NAME=tfstate
-STORAGE_ACCOUNT_NAME=tfstate$RANDOM
-CONTAINER_NAME=tfstate
-
-# Create resource group
-az group create --name $RESOURCE_GROUP_NAME --location uksouth
-
-# Create storage account
-az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
-
-# Get storage account key
-ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
-
-# Create blob container
-az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
-
-echo "storage_account_name: $STORAGE_ACCOUNT_NAME"
-echo "container_name: $CONTAINER_NAME"
-```
-
-```
-# Take a look at the script and see what it does
-cat storage_setup.sh
-
-# provide execution rights
-chmod +x storage_setup.sh
-
-# Run the script and take note of output
-./storage_setup.sh
-```
-
-
-#### Create a terraform block in `main.tf` to include the backend configuration 
-
-> From `contoso/main.tf`, add the following to beginning of the file and fill it with your storage account details.
-
-```terraform
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "tfstate"
-    storage_account_name  = "<your_storage_account_name>"
-    container_name        = "tfstate"
-    key                   = "terraform.tfstate"
-  }
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>3.34.0"
+    ```terraform
+    variable "location" {
+      type    = string
+      default = "uksouth"
     }
-  }
-}
-```
+    
+    terraform {
+      required_providers {
+        azurerm = {
+          source  = "hashicorp/azurerm"
+          version = "~> 4.0"
+        }
+        random = {
+          source  = "hashicorp/random"
+          version = "~> 3.0"
+        }
+      }
+    }
+    
+    provider "azurerm" {
+      features {}
+      storage_use_azuread = true
+    }
+    
+    locals {
+      postfix = random_pet.pet.id
+    }
+    
+    data "azurerm_client_config" "current" {}
+    
+    resource "random_pet" "pet" {
+      length    = 2
+      separator = "-"
+    }
+    
+    resource "azurerm_resource_group" "state" {
+      name     = "rg-state-${local.postfix}"
+      location = var.location
+    }
+    
+    resource "azurerm_storage_account" "state" {
+      name                          = "ststate${replace(local.postfix, "-", "")}"
+      resource_group_name           = azurerm_resource_group.state.name
+      location                      = azurerm_resource_group.state.location
+      account_tier                  = "Standard"
+      account_replication_type      = "LRS"
+      shared_access_key_enabled     = false
+      public_network_access_enabled = true # Do not do this in production
+    }
+    
+    resource "azurerm_storage_container" "state" {
+      name                  = "tfstate"
+      storage_account_name  = azurerm_storage_account.state.name
+      container_access_type = "private"
+    }
+    
+    resource "azurerm_role_assignment" "state" {
+      scope                = azurerm_storage_container.state.resource_manager_id
+      role_definition_name = "Storage Blob Data Owner"
+      principal_id         = data.azurerm_client_config.current.object_id
+    }
+    
+    output "storage_account_details" {
+      value = {
+        resource_group_name  = azurerm_storage_account.state.resource_group_name
+        storage_account_name = azurerm_storage_account.state.name
+        container_name       = azurerm_storage_container.state.name
+      }
+    }
+    ```
 
-#### Get rid of the existing plugins, state files, etc.
+2. Take note of the output values, you will need them later.
 
-To make sure, nothing gets in the way remove `terraform.tfstate`, `terraform.tfstate.backup` and `.terraform` folder as well. 
+### 3. Update the `terraform` block in `main.tf` to include the backend configuration
 
-> Note: In real world scenario, you may want to migrate your existing state from local to remote. For the purpose of lab, we are starting out with directly deploying to remote from onset.
+1. Update `main.tf` and add a `backend` block
 
-```bash
-# make sure you are in right directory
-cd ~/clouddrive/tfw/contoso
-rm terraform.tfstate terraform.tfstate.backup
-rm -rf .terraform/
-```
+    ```terraform
+    terraform {
+      required_providers {
+        azurerm = {
+          source  = "hashicorp/azurerm"
+          version = "~> 4.0"
+        }
+      }
+      backend "azurerm" {}
+    }
+    ```
 
-#### Init, Plan and Apply
+    Note that the `backend` block is empty. This is because we will be using the `init` command to configure the backend.
 
-Do an init, plan and apply. 
+### 4. Initialize the backend
 
-> Initialize
-```
-# The output from init should setup a remote backend.
-terraform init
+1. Run init
 
-# You can take a quick look at `.terraform` folder if interested to see what it's in its `state` file.
-```
+    ```powershell
+    terraform init `
+        -backend-config="resource_group_name=<your_resource_group_name>" `
+        -backend-config="storage_account_name=<your_storage_account_name>" `
+        -backend-config="container_name=tfstate" `
+        -backend-config="key=terraform.tfstate" `
+        -backend-config="use_azuread_auth=true"
+    ```
 
-#### If you run into any issues, remove `.terraform` folder and do an init again.
+    ```bach
+    terraform init \
+        -backend-config="resource_group_name=<your_resource_group_name>" \
+        -backend-config="storage_account_name=<your_storage_account_name>" \
+        -backend-config="container_name=tfstate" \
+        -backend-config="key=terraform.tfstate" \
+        -backend-config="use_azuread_auth=true"
+    ```
 
->Plan
-```
-terraform plan
-```
+2. The output from init should setup a remote backend and prompt you to migrate you local state to the remote backend.
 
-> When ready, Apply
-```
-Apply
-```
+    ```text
+    Initializing the backend...
+    Do you want to copy existing state to the new backend?
+      Pre-existing state was found while migrating the previous "local" backend to the
+      newly configured "azurerm" backend. No existing state was found in the newly
+      configured "azurerm" backend. Do you want to copy this state to the new "azurerm"
+    backend? Enter "yes" to copy and "no" to start with an empty state.
+    ```
 
-#### Verify
+3. Type `yes` and hit enter.
+
+### 5. Plan and apply
+
+1. Run `terraform apply` to and ensure there are no changes.
+
+### 6. Verify
 
 * Verify the resources that were created
 * Take a look at the state file in the blob container of your storage account and make sure it's updated too.
-* There shouldn't be any more local state file in `contoso` folder.
+* There shouldn't be any more local state file in the folder.
+
+### 7. Recap
+
+* AzureRM Backend - <https://developer.hashicorp.com/terraform/language/backend/azurerm>
 
 ---
-
-#### [Bonus Tasks if you have time]
-
-Feel free to carry on with below ones if you have finished the labs ahead of time.
-
-#### Locking 
-
-If you are interested, open two terminals and try doing a `terraform apply` on each (don't proceed with approval). You should find that the second one will fail because the first apply still has the `tfstate` file locked.
-
-* Take a look at locking here
-    *  https://www.terraform.io/docs/state/locking.html
-
-#### Partial Config
-
-At the moment, we have the storage account name hard-coded in `main.tf`
-
-We can use `partial config` feature during initialization stage to pass this value.
-
-To avoid any issues, destroy the existing environment and remove any plugins.
-```bash
-cd ~/clouddrive/tfw/contoso
-terraform destroy
-rm -rf .terraform/
-
-**Remove below line of code from `main.tf`**
-
-```terraform
-storage_account_name  = "<your_sg_account>"
-```
-
-# Now init with partial config (pass in your storage account name)
-terraform init -backend-config="storage_account_name=your-sg-account"
-```
-
-> Plan and apply. It should work the same way as before.
----
-
-#### Commit and clean up your infrastructure
-
-> Do a git commit and download the repo or push it to your remote for reference or further learning.
-> clean up the infrastructure (including the storage account and any credentials)
-
---- 
-
-Recap:
-
-* Terraform Backend Docs- https://www.terraform.io/docs/backends/index.html
-* AzureRM Backend - https://www.terraform.io/docs/backends/types/azurerm.html
