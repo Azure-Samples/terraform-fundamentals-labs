@@ -125,88 +125,88 @@ Here, we will create a simple module called `demo` that will create a resource g
 
 1. Copy the variables to `variable.tf`
 
-  The `demo` `variable.tf` should look like this:
-
-  ```terraform
-  variable "resource_groups" {
-    type        = map(string)
-    description = "The resource groups to deploy"
-  }
+    The `demo` `variable.tf` should look like this:
   
-  variable "prefix" {
-    type        = string
-    description = "A prefix for all resources"
-    default     = "contoso"
-  }
-  
-  variable "region" {
-    type        = string
-    default     = "North Europe"
-    description = "The Azure region to deploy resources"
-    validation {
-      condition     = contains(["UK South", "UK West", "North Europe", "West Europe", "East US", "West US"], var.region)
-      error_message = "Invalid region"
+    ```terraform
+    variable "resource_groups" {
+      type        = map(string)
+      description = "The resource groups to deploy"
     }
-  }
-  
-  variable "tags" {
-    type        = map(any)
-    description = "A map of tags"
-  }
-  
-  variable "virtual_networks" {
-    type = map(object({
-      name               = string
-      resource_group_key = string
-      address_space      = list(string)
-      subnets = map(object({
-        name           = optional(string)
-        address_prefix = string
+    
+    variable "prefix" {
+      type        = string
+      description = "A prefix for all resources"
+      default     = "contoso"
+    }
+    
+    variable "region" {
+      type        = string
+      default     = "North Europe"
+      description = "The Azure region to deploy resources"
+      validation {
+        condition     = contains(["UK South", "UK West", "North Europe", "West Europe", "East US", "West US"], var.region)
+        error_message = "Invalid region"
+      }
+    }
+    
+    variable "tags" {
+      type        = map(any)
+      description = "A map of tags"
+    }
+    
+    variable "virtual_networks" {
+      type = map(object({
+        name               = string
+        resource_group_key = string
+        address_space      = list(string)
+        subnets = map(object({
+          name           = optional(string)
+          address_prefix = string
+        }))
       }))
-    }))
-    description = "The virtual networks to deploy"
-  }
-  ```
+      description = "The virtual networks to deploy"
+    }
+    ```
 
 1. Copy the outputs to `outputs.tf`
 
-  The `demo` `outputs.tf` should look like this:
-
-  ```terraform
-  output "resource_group_ids" {
-    value       = { for key, value in azurerm_resource_group.demo : key => value.id }
-    description = "Resource group ids"
-  }
-  ```
+    The `demo` `outputs.tf` should look like this:
+  
+    ```terraform
+    output "resource_group_ids" {
+      value       = { for key, value in azurerm_resource_group.demo : key => value.id }
+      description = "Resource group ids"
+    }
+    ```
 
 1. Call the module from the root `main.tf`
 
-  The `main.tf` in the root module should look like this:
-
-  ```terraform
-  terraform {
-    required_providers {
-      azurerm = {
-        source  = "hashicorp/azurerm"
-        version = "~> 4.0"
+    The `main.tf` in the root module should look like this:
+  
+    ```terraform
+    terraform {
+      required_providers {
+        azurerm = {
+          source  = "hashicorp/azurerm"
+          version = "~> 4.0"
+        }
       }
     }
-  }
-  
-  provider "azurerm" {
-    features {}
-  }
-  
-  module "demo" {
-    source = "./modules/demo"
     
-    prefix = var.prefix
-    region = var.region
-    resource_groups = var.resource_groups
-    virtual_networks = var.virtual_networks
-    tags = var.tags
-  }
-  ```
+    provider "azurerm" {
+      features {}
+    }
+    
+    module "demo" {
+      source = "./modules/demo"
+      
+      prefix = var.prefix
+      region = var.region
+      resource_groups = var.resource_groups
+      virtual_networks = var.virtual_networks
+      tags = var.tags
+    }
+    ```
 
 1. Update `outputs.tf` to reference the module
 
