@@ -1,4 +1,10 @@
-# GitHub Actions Continuous Delivery Lab
+---
+layout: page
+title: Continuous Delivery
+description: Lab 8 - Option 1 - GitHub Actions
+---
+
+## Lab description
 
 During this lab you will setup Azure and GitHub using Terraform then run a Continuous Delivery pipeline to deploy infrastructure using OIDC to authenticate to the State file and Azure.
 
