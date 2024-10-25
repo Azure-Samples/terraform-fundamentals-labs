@@ -7,7 +7,16 @@ codeBlocks.forEach(function (codeBlock) {
   copyButton.ariaLabel = 'Copy code to clipboard';
   copyButton.innerText = 'Copy';
 
-  codeBlock.prepend(copyButton);
+  var codeType = document.createElement('span');
+  codeType.className = 'code-type';
+  codeType.innerText = codeBlock.querySelector('code').attributes['data-lang'].value;
+
+  var codeDiv = document.createElement('div');
+  codeDiv.className = 'code-div';
+  codeDiv.appendChild(copyButton);
+  codeDiv.appendChild(codeType);
+
+  codeBlock.prepend(codeDiv);
 
   copyButton.addEventListener('click', function () {
     var code = codeBlock.querySelector('table.rouge-table td.code pre').innerText.trim();

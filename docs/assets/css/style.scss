@@ -28,12 +28,6 @@
   padding-top: 1rem;
 }
 
-[data-lang]::before {
-  content: attr(data-lang) !important;
-  display: block;
-  text-align: right;
-}
-
 table.rouge-table td pre {
   padding: 0 !important;
   margin: 0 !important;
@@ -48,15 +42,20 @@ table.rouge-table td.code {
   padding: 0 !important;
 }
 
-figure.highlight > pre > button {
+figure.highlight > pre > div.code-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+figure.highlight > pre > div.code-div > button {
   opacity: 0;
 }
 
-figure.highlight > pre:hover > button {
+figure.highlight > pre:hover > div.code-div > button {
   opacity: 1;
 }
 
-figure.highlight > pre > button:active,
-figure.highlight > pre > button:focus {
+figure.highlight > pre > div.code-div > button:active,
+figure.highlight > pre > div.code-div > button:focus {
   opacity: 1;
 }
