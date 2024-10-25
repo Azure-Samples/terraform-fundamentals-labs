@@ -1,4 +1,4 @@
-var codeBlocks = document.querySelectorAll('table.rougetable td.code pre');
+var codeBlocks = document.querySelectorAll('table.rouge-table td.code pre');
 
 codeBlocks.forEach(function (codeBlock) {
   var copyButton = document.createElement('button');
