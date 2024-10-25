@@ -22,7 +22,7 @@ cd ~/terraform-labs
 cd ~/terraform-labs
 ```
 
-If you were unable to complete the last lab, you can find a copy of the files in the [solutiuons folder](../01-core-terraform-workflow/solutions/03)
+If you were unable to complete the last lab, you can find a copy of the files in the [solutiuons folder]({{ site.github.repository_url }}/tree/main/docs/01-core-terraform-workflow/solutions/03)
 
 ## Refactor main.tf to use locals
 
