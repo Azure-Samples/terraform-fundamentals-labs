@@ -1,8 +1,7 @@
 ---
-layout: default
+layout: page
 title: Terraform on Azure Fundamentals Labs
-description: |
-  A set of labs to introduce Terraform on Azure
+description: A set of labs to introduce Terraform on Azure
 ---
 
 ## Lab description

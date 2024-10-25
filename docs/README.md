@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Terraform core workflow.
 description: Day 1 Operations - write, init, plan and apply
 ---
