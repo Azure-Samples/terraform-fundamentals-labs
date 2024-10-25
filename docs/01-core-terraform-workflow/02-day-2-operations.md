@@ -17,6 +17,20 @@ The terraform Core Workflow is still:
 
 ## Day 2 operation (update)
 
+### Setup
+
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
+```
+
+```bash
+cd ~/terraform-labs
+```
+
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/01-core-terraform-workflow/solutions/01)
+
 ### 1. Write
 
 1. Open `main.tf` on the editor and add a `tag` by making the below change within `contoso_rg` resource

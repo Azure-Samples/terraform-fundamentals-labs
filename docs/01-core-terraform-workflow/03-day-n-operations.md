@@ -17,6 +17,20 @@ The terraform Core Workflow is still:
 
 ## Day n operation (destroy)
 
+### Setup
+
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
+```
+
+```bash
+cd ~/terraform-labs
+```
+
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/01-core-terraform-workflow/solutions/02)
+
 ### 1. Plan
 
 Run a plan to see what will be destroyed.
@@ -140,3 +154,5 @@ See:
 * <https://developer.hashicorp.com/terraform/internals/graph>
 
 To see the graph in svg format, `graphviz` needs to be installed. This will not work in cloud shell as there isn't sudo access, but should work on vs code online. (or local environments) <http://www.graphviz.org/download>.
+
+---

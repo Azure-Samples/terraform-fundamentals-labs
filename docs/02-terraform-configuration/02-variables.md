@@ -1,191 +1,242 @@
-## Variable Definition Files
+---
+layout: page
+title: Terraform configuration
+description: Lab 2 - Part 2 - Variables
+---
 
-#### Setup
+## Lab description
 
-> Make sure you are in the correct folder
+In this lab we learn about the `variable` definition in Terraform.
 
-```bash
-cd ~/clouddrive/tfw/contoso
+## Variables
+
+### Setup
+
+Make sure you are in the correct folder:
+
+```powershell
+cd ~/terraform-labs
 ```
 
-## 2.1 Variables
+```bash
+cd ~/terraform-labs
+```
 
-#### Refactor `main.tf` to make it more configurable using variables
+If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/02-terraform-configuration/solutions/01)
 
-Introduce variables to `main.tf`, so it looks such as below.
+### 1. Refactor `main.tf` to make it more configurable using variables
 
-* Notice how each variable has a slightly different setup. We've done this, so we can try different approaches to pass in data.
+Introduce variables to `main.tf`
+
+Notice how each variable has a slightly different setup. We've done this, so we can try different approaches to pass in data:
 
 ```terraform
-variable prefix {}
-
-variable region {           
-    type = string
-    default = "North Europe"
-}
-
-variable tags {
-    type = map          
-}
-
 terraform {
-    required_providers {
-        azurerm = {
-            source  = "hashicorp/azurerm"
-            version = "~>3.34.0"
-        }
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
     }
+  }
 }
 
 provider "azurerm" {
-    features {}    
+  features {}
+}
+
+variable "prefix" {}
+
+variable "region" {
+  type        = string
+  default     = "North Europe"
+  description = "The Azure region to deploy resources"
+  validation {
+    condition     = contains(["UK South", "UK West", "North Europe", "West Europe", "East US", "West US"], var.region)
+    error_message = "Invalid region"
+  }
+}
+
+variable "tags" {
+  type        = map(any)
+  description = "A map of tags"
 }
 
 resource "azurerm_resource_group" "contoso_rg" {
-    name = "${var.prefix}_rg"
-    location = var.region
-    tags = var.tags
+  name     = "${var.prefix}_rg"
+  location = var.region
+  tags     = var.tags
 }
 
-resource "azurerm_resource_group" "contoso_dev_rg" {    
-    name = "${var.prefix}_dev_rg"
-    location = var.region
-    tags = var.tags
+resource "azurerm_resource_group" "contoso_dev_rg" {
+  name     = "${var.prefix}_dev_rg"
+  location = var.region
+  tags     = var.tags
 }
 ```
 
-#### terraform.tfvars
+### 2. terraform.tfvars
 
-From `contoso` folder, Create a file called `terraform.tfvars`
+1. Create a file called `terraform.tfvars`.
 
-Option 1:
-```bash
-cd ~/clouddrive/tfw/contoso/
-code terraform.tfvars
-```
-**or**
+    ```powershell
+    cd ~/terraform-labs
+    code terraform.tfvars
+    ```
 
-Option 2:
-```bash
-touch terraform.tfvars
-code .
-# and then select the file from editor's left pane
-```
+    ```bash
+    cd ~/terraform-labs
+    code terraform.tfvars
+    ```
 
-Add tag information to `terraform.tfvars` so it looks like below.
+2. Add tag inputs to `terraform.tfvars` so it looks like below.
 
-```terraform
-# terraform.tfvars
-tags = {  
-    cost_center = "contoso research"    
-} 
-```
-* Save both `main.tf` and `terraform.tf` files
-
-> If you're using the `editor` to keep track of newly created files, make sure to hit the `refresh` button on top-right corner of the left panel to make sure it shows you the latest file structure.
-
-![refresh_button](../assets/refresh_files.png)
-
-#### Plan and Apply
-
-Now, run a **`terraform plan`**. When prompted for **var.prefix**, enter "contoso"
-
-* You should something like below, stating that there will be a force replacement.
-* This is because, now our default region is set to "North Europe" and we are not passing any overrides.
-* We are prompted for `prefix` because we haven't set any `default` value
-
-```bash
-  # azurerm_resource_group.contoso_rg must be replaced
--/+ resource "azurerm_resource_group" "contoso_rg" {
-      ~ id       = "/subscriptions/.../resourceGroups/contoso_rg" -> (known after apply)
-      ~ location = "uksouth" -> "northeurope" # forces replacement
-        name     = "contoso_rg"
-        tags     = {
-            "cost_center" = "contoso research"
-        }
+    ```terraform
+    # terraform.tfvars
+    tags = {  
+      cost_center = "contoso research"    
     }
-Plan: 2 to add, 0 to change, 2 to destroy.
-```
+    ```
 
-When ready, do a **`terraform apply`** and enter "contoso" when prompted for prefix. (_and then enter `yes` when asked for approval_)
+### 3. Plan and Apply
 
-#### Verify the updates and commit your code.
+1. Now, run a `terraform plan`. When prompted for `var.prefix`, enter `contoso`:
+
+    * You should something like below, stating that there will be a force replacement.
+    * This is because, now our default region is set to "North Europe" and we are not passing any overrides.
+    * We are prompted for `prefix` because we haven't set any `default` value
+
+    ```text
+    azurerm_resource_group.contoso_dev_rg: Refreshing state... [id=/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_dev_rg]
+    azurerm_resource_group.contoso_rg: Refreshing state... [id=/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg]
+    
+    Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+    -/+ destroy and then create replacement
+    
+    Terraform will perform the following actions:
+    
+      # azurerm_resource_group.contoso_dev_rg must be replaced
+    -/+ resource "azurerm_resource_group" "contoso_dev_rg" {
+          ~ id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_dev_rg" -> (known after apply)
+          ~ location   = "uksouth" -> "northeurope" # forces replacement
+            name       = "contoso_dev_rg"
+            tags       = {
+                "cost_center" = "contoso research"
+            }
+            # (1 unchanged attribute hidden)
+        }
+    
+      # azurerm_resource_group.contoso_rg must be replaced
+    -/+ resource "azurerm_resource_group" "contoso_rg" {
+          ~ id         = "/subscriptions/b857908d-3f5c-4477-91c1-0fbd08df4e88/resourceGroups/contoso_rg" -> (known after apply)
+          ~ location   = "uksouth" -> "northeurope" # forces replacement
+            name       = "contoso_rg"
+            tags       = {
+                "cost_center" = "contoso research"
+            }
+            # (1 unchanged attribute hidden)
+        }
+    
+    Plan: 2 to add, 0 to change, 2 to destroy.
+    ```
+
+2. When ready, do a `terraform apply` and enter `contoso` when prompted for prefix. (_and then enter `yes` when asked for approval_).
+
+### 4. Verify the updates and commit your code
 
 This time when doing a `git add .`, you will also see `terraform.tfvars` being added.
 
-----
+### 5. Environment Variables and custom .tfvars
 
-## 2.2 Environment Variables and custom .tfvars
+1. We are currently passing in the `prefix` manually from cli. Let's set an `environment variable`, so it get's picked from there.
 
-We are currently passing in the `prefix` manually from cli. Let's set an `environment variable`, so it get's picked from there.
+    ```powershell
+    $env:TF_VAR_prefix="contoso"
+    Write-Host $env:TF_VAR_prefix
+    ```
 
-From terminal,
-```bash
-export TF_VAR_prefix="contoso"
-# ensure it's created correctly
-env | grep TF_VAR_prefix
-```
+    ```bash
+    export TF_VAR_prefix="contoso"
+    echo $TF_VAR_prefix
+    ```
 
-Now create two new files for .tfvars such as below, so we can make the region configurable. (this could  also be something like `.dev.tfvars`, `.prod.tfvars` in real world scenarios)
+2. Now create two new files for .tfvars such as below, so we can make the region configurable. (this could  also be something like `.dev.tfvars`, `.prod.tfvars` in real world scenarios)
 
-* contoso.uk.tfvars
-* contoso.europe.tfvars
+    * contoso.uk.tfvars
+    * contoso.europe.tfvars
 
-```bash
-cd ~/clouddrive/tfw/contoso
-echo 'region = "UK South"' > contoso.uk.tfvars
-echo 'region = "North Europe"' > contoso.europe.tfvars
-```
+    ```powershell
+    cd ~/terraform-labs
+    Set-Content -Value "region = `"UK South`"" -Path "contoso.uk.tfvars"
+    Set-Content -Value "region = `"North Europe`"" -Path "contoso.europe.tfvars"
+    ```
 
-* Take a quick look at both `.tfvars` files and make sure they have the correct region value.
+    ```bash
+    cd ~/erraform-labs
+    echo 'region = "UK South"' > contoso.uk.tfvars
+    echo 'region = "North Europe"' > contoso.europe.tfvars
+    ```
 
-#### plan and apply
+    Take a quick look at both `.tfvars` files and make sure they have the correct region value.
 
-Run a plan and apply using `contoso.uk.tfvars` file
+### 6. Plan and Apply
 
-```bash
-terraform plan -var-file="contoso.uk.tfvars"
-terraform apply -auto-approve -var-file="contoso.uk.tfvars"
-```
+1. Run a plan and apply using `contoso.uk.tfvars` file
 
-Notice that we are no longer prompted for `prefix` value anymore. Terraform now picks this up from the environment variable we've created.
+    ```powershell
+    terraform plan -var-file="contoso.uk.tfvars"
+    terraform apply -auto-approve -var-file="contoso.uk.tfvars"
+    ```
 
-#### Verify and commit
+    ```bash
+    terraform plan -var-file="contoso.uk.tfvars"
+    terraform apply -auto-approve -var-file="contoso.uk.tfvars"
+    ```
 
-Verify that the resource groups are re-created in `UK South` 
+2. Notice that we are no longer prompted for `prefix` value. Terraform now picks this up from the environment variable we created.
 
-Commit your code. This time when doing a `git add .`, you will also see two new `.tfvars` being added.
+### 7. Verify and commit
 
----
+1. Verify that the resource groups are re-created in `UK South`.
+2. Commit your code. This time when doing a `git add .`, you will also see two new `.tfvars` being added.
 
-## 2.3 Variables.tf
+### 8. Variables.tf
 
 In this step, we will move all the variable definitions to a separate file, so our config file (main.tf) looks tidy.
 
-Create a `variables.tf` file
-```
-cd ~/clouddrive/tfw/contoso
-code variables.tf
-```
+1. Create a `variables.tf` file
 
-Move all the variable definitions to this file, so it looks like below.
+    ```powershell
+    cd ~/terraform-labs
+    code variables.tf
+    ```
 
-```terraform
-# variables.tf
-variable prefix {}
+    ```bash
+    cd ~/terraform-labs
+    code variables.tf
+    ```
 
-variable region {           
-    type = string
-    default = "UK South"
-}
+2. Move all the variable definitions to this file, so it looks like below.
 
-variable tags {
-    type= map          
-}
-```
-* Save both `main.tf` and `variables.tf` files
+    ```terraform
+    variable "prefix" {}
+    
+    variable "region" {
+      type        = string
+      default     = "North Europe"
+      description = "The Azure region to deploy resources"
+      validation {
+        condition     = contains(["UK South", "UK West", "North Europe", "West Europe", "East US", "West US"], var.region)
+        error_message = "Invalid region"
+      }
+    }
+    
+    variable "tags" {
+      type        = map(any)
+      description = "A map of tags"
+    }
+    ```
 
-#### Plan and Apply
+### 9. Plan and Apply
 
 Run a `terraform plan and apply`, but this time pass in the other `.tfvars` file (contoso.europe.tfvars), so we can force a replacement.
 
@@ -194,40 +245,37 @@ terraform plan -var-file="contoso.europe.tfvars"
 terraform apply -auto-approve -var-file="contoso.europe.tfvars"
 ```
 
-#### Verify results and Commit your code
+### 10. Verify results and Commit your code
 
+1. Verify that the resource groups are re-created in `North Europe`.
+1. Commit your code to git.
 
-#### Clean up the infrastructure with `terraform destroy`
-
-* Run a `terraform destroy` and verify that both resource groups are now deleted.
-
-* Do a `terraform show` to make sure the state file is empty.
-
-----
-
-## 2.4 Recap
+### 11. Recap
 
 Take a few minutes to observe and recap on different value sources that are used for our variables.
 
-Your `contoso` folder should look like below. Make sure you are fully comfortable with what those files are. (_you can ignore state.backup file for now_)
+Your folder should look like below. Make sure you are fully comfortable with what those files are.
 
+```text
+📂terraform-labs
+┣ 📂.terraform
+┣ 📜.gitignore
+┣ 📜.terraform.lock.hcl
+┣ 📜contoso.europe.tfvars
+┣ 📜contoso.tfplan
+┣ 📜contoso.uk.tfvars
+┣ 📜main.tf
+┣ 📜terraform.tfstate
+┣ 📜terraform.tfstate.backup
+┣ 📜terraform.tfvars
+┗ 📜variables.tf
 ```
-contoso
-|___.terraform/ 
-|___contoso.europe.tfvars
-|___contoso.tfplan
-|___contoso.uk.tfvars
-|___main.tf
-|___terraform.tfstate
-|___terraform.tfstate.backup
-|___terraform.tfvars
-|___variables.tf
-```
 
-#### Topics covered
+### 12. Topics covered
 
-* https://www.terraform.io/docs/configuration/variables.html
-* https://www.terraform.io/docs/configuration/locals.html
+* <https://developer.hashicorp.com/terraform/language/values/variables>
+* <https://developer.hashicorp.com/terraform/cli/config/environment-variables>
 
-See more on Environment Variables: https://www.terraform.io/docs/commands/environment-variables.html
+---
 
+[Next Lab - Outputs](03-outputs.md)

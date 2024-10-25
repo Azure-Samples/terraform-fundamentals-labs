@@ -6,7 +6,7 @@ description: Lab 2 - Part 1 - Locals
 
 ## Lab description
 
-In this lab we learn about `locals` in terraform.
+In this lab we learn about `locals` in Terraform.
 
 ## Locals
 
@@ -91,6 +91,10 @@ If you were unable to complete the last lab, you can find a copy of the files in
 1. Do a `git add .` and `git commit -m "added locals"` as before. Ensure that only the `main.tf` file gets added.
 2. Optionally, push it your remote if you have it setup.
 
+### 4. Topics covered
+
+* <https://developer.hashicorp.com/terraform/language/values/locals>
+
 ----
 
-[Next Lab - Day 2 Operations](02-variables.md)
+[Next Lab - Variables](02-variables.md)
