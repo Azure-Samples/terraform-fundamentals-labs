@@ -417,14 +417,12 @@ As done before, verify the changes
 
 ### 7. Recap
 
-See more: https://www.terraform.io/docs/modules/index.html
+See more: <https://developer.hashicorp.com/terraform/language/modules/develop>
 
-> We've covered a handful of core terraform concepts thus far. Take your time to familiarize yourself with the topics we've covered so far and feel free to repeat the labs as needed.
+We've covered a handful of core terraform concepts thus far. Take your time to familiarize yourself with the topics we've covered so far and feel free to repeat the labs as needed.
 
-Also take a look at commands such as `fmt` and `taint` 
-* `fmt` will format the config according to style guide.
-> https://www.terraform.io/docs/commands/fmt.html
+Also take a look at commands such as `fmt`
 
-* `taint` will mark a resource as tainted / corrupted and force `recreation` upon next apply. 
-> https://www.terraform.io/docs/commands/taint.html
-----
+* `fmt` will format the config according to style guide. <https://developer.hashicorp.com/terraform/cli/commands/fmt>
+
+---
