@@ -59,4 +59,4 @@ This sample has labs covering:
 
 The instructions for this sample are in the form of a Lab. Follow along with them to get up and running.
 
-Head to the lab index to get started: [Lab Index](labs/README.md)
+Head to the lab index to get started: [Lab Index](https://aka.ms/tf/labs)
