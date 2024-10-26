@@ -54,5 +54,5 @@ Head over to the [Setup](setup.md) page to get started and then come back here.
 
 ### Lab 8: Continuous Delivery
 
-* [Option 1: GitHub](09-continuous_delivery/01-github.md)
-* [Option 2: Azure DevOps](09-continuous_delivery/02-azure-devops.md)
+* [Option 1: GitHub](09-continuous-delivery/01-github.md)
+* [Option 2: Azure DevOps](09-continuous-delivery/02-azure-devops.md)
