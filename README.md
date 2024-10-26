@@ -12,7 +12,7 @@ urlFragment: terraform-fundamentals-labs
 
 # Terraform on Azure Fundamentals Labs
 
-This is a set of labs that introduce Terraform on Azure. The labs are designed to be completed in order, with each one building on the previous one. 
+This is a set of labs that introduce Terraform on Azure. The labs are designed to be completed in order, with each one building on the previous one.
 
 The labs can be completed independently or as part of a Microsoft workshop. Please contact your Microsoft representative for more information on the full training course.
 
