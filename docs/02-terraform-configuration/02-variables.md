@@ -171,7 +171,7 @@ This time when doing a `git add .`, you will also see `terraform.tfvars` being a
     ```
 
     ```bash
-    cd ~/erraform-labs
+    cd ~/terraform-labs
     echo 'region = "UK South"' > contoso.uk.tfvars
     echo 'region = "North Europe"' > contoso.europe.tfvars
     ```
@@ -239,6 +239,11 @@ In this step, we will move all the variable definitions to a separate file, so o
 ### 9. Plan and Apply
 
 Run a `terraform plan and apply`, but this time pass in the other `.tfvars` file (contoso.europe.tfvars), so we can force a replacement.
+
+```powershell
+terraform plan -var-file="contoso.europe.tfvars"
+terraform apply -auto-approve -var-file="contoso.europe.tfvars"
+```
 
 ```bash
 terraform plan -var-file="contoso.europe.tfvars"

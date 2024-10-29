@@ -159,6 +159,10 @@ az group show --name "contoso_rg"
 
 Take a quick look at the state file as well.
 
+```powershell
+terraform show terraform.tfstate
+```
+
 ```bash
 terraform show terraform.tfstate
 ```
