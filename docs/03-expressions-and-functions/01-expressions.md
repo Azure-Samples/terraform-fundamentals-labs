@@ -24,7 +24,7 @@ cd ~/terraform-labs
 
 If you were unable to complete the last lab, you can find a copy of the files in the [solutions folder]({{ site.github.repository_url }}/tree/main/docs/02-terraform-configuration/solutions/03)
 
-### 1. Create a variable of type `list`, so we can pass in a list of resource group names
+### 1. Create a variable of type `map`, so we can pass in a list of resource group names
 
 1. In `variables.tf`, add a new variable called `resource_group_names`, so it looks like below.  
 
