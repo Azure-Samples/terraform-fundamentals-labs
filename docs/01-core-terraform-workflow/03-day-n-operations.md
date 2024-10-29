@@ -78,7 +78,7 @@ To perform exactly these actions, run the following command to apply:
 
 If the plan looks as expected, go ahead and remove the resource group that we created using `destroy` operation.
 
-`Destroy` depends on your state file to decide what needs to be removed. Unlike apply it cannot be invoked with a `.tfplan` file.
+`Destroy` depends on your state file to decide what needs to be removed.
 
 > Note that a shortcut to performing a destroy plan and apply is `terraform destroy`.
 
