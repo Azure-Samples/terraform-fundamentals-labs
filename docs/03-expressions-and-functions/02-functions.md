@@ -143,8 +143,7 @@ To exit the console at any time and go back to cloud shell's terminal, just type
 
     ```hcl
     locals {
-      terraform_version = terraform.version
-      terraform_workspace = terraform.workspace
+      subnets = cidrsubnets("10.0.0.0/24", 8, 7)
     }
     ```
 
