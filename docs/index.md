@@ -38,7 +38,7 @@ Head over to the [Setup](setup.md) page to get started and then come back here.
 
 ### Lab 4: Data Sources and Imports
 
-* [Import Resources](04-data-sources-and-refactoring/1-import-resources.md)
+* [Import Resources](04-data-sources-and-refactoring/01-import-resources.md)
 
 ### Lab 5: Dependencies
 
