@@ -143,7 +143,8 @@ resource "azurerm_resource_group" "contoso_dev_rg" {
 
 ### 4. Verify the updates and commit your code
 
-This time when doing a `git add .`, you will also see `terraform.tfvars` being added.
+1. Open your `.gitignore` file and comment out line 16. It should be changed from `*.tfvars` to `#*.tfvars`. This enables us to commit the tfvars file to source control.
+2. This time when doing a `git add .`, you will also see `terraform.tfvars` being added.
 
 ### 5. Environment Variables and custom .tfvars
 
