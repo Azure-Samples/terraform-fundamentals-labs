@@ -237,6 +237,8 @@ In this step, we will move all the variable definitions to a separate file, so o
     }
     ```
 
+3. Don't forget to delete the variables from `main.tf`.
+
 ### 9. Plan and Apply
 
 Run a `terraform plan and apply`, but this time pass in the other `.tfvars` file (contoso.europe.tfvars), so we can force a replacement.
