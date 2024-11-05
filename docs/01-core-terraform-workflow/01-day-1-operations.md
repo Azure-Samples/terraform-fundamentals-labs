@@ -232,13 +232,9 @@ Besides information about terraform managed resources, `tfstate` will often cont
 
 1. You are welcome to push your changes to your own github remote if you prefer.
 
-    * For this, You'll have to setup an ssh key using `ssh-keygen` from your cloud shell and add the public key to your github account in order to be able push the repo to your origin.
-
-    * You'll also have up your `remote` by doing a `git remote add <your_remote_origin_name(e.g: upstream)> <your_remote_url>
-
-    * See: <https://help.github.com/en/github/using-git/adding-a-remote>
-
-    * If you're new to git, and unsure about these steps. Feel free to skip for now, and we can cover these tomorrow when discussing Terraform and DevOps.
+    1. You'll need to create a repository on GitHub.com and push your changes up there.
+    1. See: <https://help.github.com/en/github/using-git/adding-a-remote>
+    1. If you're new to git, and unsure about these steps. Feel free to skip for now.
 
 ---
 
