@@ -115,8 +115,7 @@ If you were unable to complete the last lab, you can find a copy of the files in
 
 1. Run a `plan` and take a moment to understand how the changes will be applied.
 
-    * Feel free to pass in `contoso.<region>.tfvars` if needed.
-    * By default, we deploy to `UK South` (as defined in `terraform.tfvars`)
+    By default, we deploy to `North Europe` (as defined in `terraform.tfvars`)
 
 1. It should look something like below:
 
