@@ -44,7 +44,7 @@ Here, we will create a simple module called `demo` that will create a resource g
 
     ```bash
     cd ~/terraform-labs
-    mkdir -m modules/demo
+    mkdir -p modules/demo
     
     cd modules/demo
     touch README.md
