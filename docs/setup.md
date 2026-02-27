@@ -13,8 +13,8 @@ description: Pre-requisites for the labs
 * Visual Studio Code: [Download](https://code.visualstudio.com/)
   * Azure Terraform Extension for Visual Studio Code: [Install](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureterraform)
   * HashiCorp Terraform Extension for Visual Studio Code: [Install](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
-* Azure CLI: [Download](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli#install-or-update)
-* An Azure Subscription: [Free Account](https://azure.microsoft.com/en-gb/free/search/)
+* Azure CLI: [Download](https://learn.microsoft.com/cli/azure/install-azure-cli-windows?tabs=azure-cli#install-or-update)
+* An Azure Subscription: [Free Account](https://azure.microsoft.com/pricing/purchase-options/azure-account?cid=msft_learn)
 * PowerShell Core (7) or Bash
 
 ### Folder
